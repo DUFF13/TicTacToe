@@ -65,7 +65,7 @@ def jouer_IA_vs_IA(jeu : ttt.TTT):
                 for cln in range(jeu.m):
                     if jeu.grid[lgn][cln] == 0:
                         jeu.grid[lgn][cln] = 2
-                        valeur = jeu.min_max_align(2, -sys.maxsize, sys.maxsize, 2 )  # Profondeur à adapter ici 3
+                        valeur = jeu.min_max_align(3, -sys.maxsize, sys.maxsize, 2 )  # Profondeur à adapter ici 3
                         jeu.grid[lgn][cln] = 0
 
                         if valeur > meilleur_valeur:
@@ -85,7 +85,7 @@ def jouer_IA_vs_IA(jeu : ttt.TTT):
                 for cln in range(jeu.m):
                     if jeu.grid[lgn][cln] == 0:
                         jeu.grid[lgn][cln] = 2
-                        valeur = jeu.min_max_vide(2, -sys.maxsize, sys.maxsize, 2)  # Profondeur à adapter ici 3
+                        valeur = jeu.min_max_vide(3, -sys.maxsize, sys.maxsize, 2)  # Profondeur à adapter ici 3
                         jeu.grid[lgn][cln] = 0
 
                         if valeur > meilleur_valeur:
