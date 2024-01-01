@@ -1,12 +1,9 @@
 import sys
 import numpy as np
+import exception
+import time
 
-class InvalidMoveError(Exception):
-    """Jouer sur une case déjà jouée est impossible"""
-    def __init__(self, message = "Choix de case impossible") -> None:
-        self.message = message
-        super().__init__(self.message)
-
+DureeMaximalEnSeconde = 5
 
 class TTT():
 
@@ -78,7 +75,7 @@ class TTT():
         
         player = self.next_player()
         if (player == 0) or (self.grid[rows][columns] != 0): # si le coup est impossible
-            raise InvalidMoveError()
+            raise exception.InvalidMoveError()
 
         else:
             self.grid[rows][columns] = player
@@ -126,7 +123,7 @@ class TTT():
         l = 0
         while (l < self.k):
             if (cln < 0 or cln >= self.m or lgn < 0 or lgn >= self.n):
-                break # j'espère que Break en python fasse sortir de la boucle 
+                break 
             if self.grid[lgn][cln] != joueur:
                 break
             cln += dc
@@ -136,7 +133,7 @@ class TTT():
 
 
     def cases_vides (self, i : tuple) -> int:
-        '''renvoie les voisins de la case donnée en entrée sous forme d'une liste'''
+        '''renvoie les voisins de la case donnée en entrée sous forme d'une liste''' # c'est faux, ça ne renvoie pas ça 
         lgn, cln = i
         tab_direction = [(0,1), (0,-1), (1,0), (-1,0), (1,1), (1,-1), (-1,1), (-1,-1)]
         free_box = 0
@@ -161,7 +158,7 @@ class TTT():
 
 
 
-    def heuristique_vide(self, joueur : int) -> int:
+    def heuristique_vide(self, joueur : int) -> int: # nul, perd même en commençant ...
         ''' heuristique pour min_max, à déterminer (Continue : compare le nombre de cases libres autour de la case jouée)'''
         w_max_joueur = 0
         w_max_adversaire = 0
@@ -182,11 +179,11 @@ class TTT():
                     else :
                         w_max_adversaire += self.cases_vides((i, j))
                     
-        return  (self.k * (w_max_joueur - w_max_adversaire)) # plus c'est grand, plus le joueur a une position favorable
+        return  (self.k * (w_max_joueur - w_max_adversaire) * w_max_joueur) # plus c'est grand, plus le joueur a une position favorable
 
 
     def heuristique_align(self, joueur) -> int: 
-        ''' heuristique pour min_max, à déterminer (naîve : compare les longueurs d'alignement max)'''
+        ''' heuristique pour min_max, à déterminer (naîve : compare les longueurs d'alignement max) '''
         algn_max_joueur = 0
         algn_max_adversaire = 0
         adversaire = 3 - joueur # joueur = 1 ou 2 ...
@@ -197,7 +194,7 @@ class TTT():
                     for l in range(4):
                         l = self.longueur_alignement((i, j), tab_direction[l], joueur)
                         if (l == self.k):
-                            return sys.maxsize # si le joueur est gagnant on renvoie MAX_INT (équivalent C), il faut trouver une autre fonction ce n'est pas vraiment MAX_INT
+                            return sys.maxsize # si le joueur est gagnant on renvoie MAX_INT (pas trop équivalent du C mais ça fait l'affaire)
                         if (l > algn_max_joueur): # demander à Aubry
                             algn_max_joueur = l
                 elif (self.grid[i][j] == adversaire):
@@ -214,7 +211,7 @@ class TTT():
 
 
     def min_max_align(self, p : int, alpha : int, beta : int, joueur : int) -> int:
-            ''' algorithme minimax, faire du alpha-beta elagage pour réduire la complexité'''
+            ''' algorithme minimax '''
 
             j = self.next_player()
             
@@ -254,8 +251,9 @@ class TTT():
                 return m
 
 
+
     def min_max_vide(self, p : int, alpha : int, beta : int, joueur : int) -> int:
-            ''' algorithme minimax, faire du alpha-beta elagage pour réduire la complexité'''
+            ''' algorithme minimax '''
 
             j = self.next_player()
             
@@ -294,155 +292,53 @@ class TTT():
                                     beta = m
                 return m
 
-def jouer_partie(jeu : TTT):
-    ''' jouer une partie en 1v1 sans IA'''
 
-    if jeu.nb_player == 2:
-        joueur = 1
-        print(jeu)
-        while (joueur != 0 and not(jeu.gagnant(1)) and not(jeu.gagnant(2))):
-            if joueur == 1:
-                print("c'est au joueur 1 de jouer")
-                lgn = int(input("Entrez le numéro de ligne (0 à {}): ".format(jeu.n - 1)))
-                cln = int(input("Entrez le numéro de colonne (0 à {}): ".format(jeu.m - 1)))
-                if (cln < 0 or cln > jeu.m or lgn < 0 or lgn > jeu.n):
-                    print("ces coordonnées ne sont pas possibles")
-                else:
-                    jeu.play_move(lgn, cln)
-            else:
-                print("c'est au joueur 2 de jouer")
-                lgn = int(input("Entrez le numéro de ligne (0 à {}): ".format(jeu.n - 1)))
-                cln = int(input("Entrez le numéro de colonne (0 à {}): ".format(jeu.m - 1)))
-                if (cln < 0 or cln > jeu.m or lgn < 0 or lgn > jeu.n):
-                    print("ces coordonnées ne sont pas possibles")
-                else:
-                    jeu.play_move(lgn, cln)
-
-            if joueur % 2 == 0:
-                joueur = 1
-            else:
-                joueur = 2
-            print(jeu)
-        if jeu.gagnant(1):
-            print("Le joueur 1 a gagné")
-        elif jeu.gagnant(2):
-            print("le joueur 2 a gagné")
-        else:
-            print("Match nul")
+    def min_max_IterativDeepening(self, p : int, alpha : int, beta : int, joueur : int) -> int:
+            ''' algorithme minimax '''
+            j = self.next_player()
+            start = time.time()
 
 
-def jouer_partie_IA(jeu : TTT):
-    ''' jouer une partie contre l'IA en 1v1'''
-    print("Vous jouez contre l'IA. Voici la grille de jeu :\n")
-    print(jeu)  # Affichage de la grille de jeu initiale
-
-    joueur = int(input("Choisir : l'humain commence (1) | l'IA commence (2)"))
-    
-
-    while (joueur != 0 and not(jeu.gagnant(1)) and not(jeu.gagnant(2))):
-        if joueur == 1:
-            print("\nTour du joueur humain.")
-            try:
-                lgn = int(input("Entrez le numéro de ligne (0 à {}): ".format(jeu.n - 1)))
-                cln = int(input("Entrez le numéro de colonne (0 à {}): ".format(jeu.m - 1)))
-                jeu.play_move(lgn, cln)
-                
-            except (ValueError, IndexError, InvalidMoveError):
-                print("Coup invalide. Veuillez réessayer.")
-                continue
-        else:
-            print("\nTour de l'IA.")
-            meilleur_coup = None
-            meilleur_valeur = -sys.maxsize
-            for lgn in range(jeu.n):
-                for cln in range(jeu.m):
-                    if jeu.grid[lgn][cln] == 0:
-                        jeu.grid[lgn][cln] = 2
-                        valeur = jeu.min_max(3, -sys.maxsize, sys.maxsize, 2)  # Profondeur à adapter ici 3
-                        jeu.grid[lgn][cln] = 0
-
-                        if valeur > meilleur_valeur:
-                            meilleur_valeur = valeur
-                            meilleur_coup = (lgn, cln)
-
-            # if meilleur_coup:
-            jeu.play_move(meilleur_coup[0], meilleur_coup[1])
-                
-        joueur = jeu.next_player() # Passage au joueur suivant
-        print(jeu)  # Affichage de la grille après le coup
-        
-
-    if jeu.gagnant(1):
-        print("\nLe joueur humain a gagné !")
-    elif jeu.gagnant(2):
-        print("\nL'IA a gagné !")
-    else:
-        print("\nMatch nul !")
-
-
-def jouer_IA_vs_IA(jeu : TTT):
-    ''' faire jouer 2 IA l'une contre l'autre'''
-    print(" H_vide (J1) VS H_align (J2). Voici la grille de jeu :\n")
-    print(jeu)  
-    player = 1
-    
-    while (player != 0 and not(jeu.gagnant(1)) and not(jeu.gagnant(2))):
-        if player == 1:
-            print("\nTour du joueur 1.")
-            meilleur_coup = None
-            meilleur_valeur = -sys.maxsize
-            for lgn in range(jeu.n):
-                for cln in range(jeu.m):
-                    if jeu.grid[lgn][cln] == 0:
-                        jeu.grid[lgn][cln] = 2
-                        valeur = jeu.min_max_align(3, -sys.maxsize, sys.maxsize, 2 )  # Profondeur à adapter ici 3
-                        jeu.grid[lgn][cln] = 0
-
-                        if valeur > meilleur_valeur:
-                            meilleur_valeur = valeur
-                            meilleur_coup = (lgn, cln)
-
-            if meilleur_coup != None :
-                jeu.play_move(meilleur_coup[0], meilleur_coup[1])
-            else :
-                break
+            if (self.gagnant(joueur) or self.gagnant(3 - joueur) or j == 0 or p == 0 or time.time() - start > DureeMaximalEnSeconde):
+                return self.heuristique_align(joueur)
             
-        else:
-            print("\nTour du joueur 2.")
-            meilleur_coup = None
-            meilleur_valeur = -sys.maxsize
-            for lgn in range(jeu.n):
-                for cln in range(jeu.m):
-                    if jeu.grid[lgn][cln] == 0:
-                        jeu.grid[lgn][cln] = 2
-                        valeur = jeu.min_max_vide(3, -sys.maxsize, sys.maxsize, 2)  # Profondeur à adapter ici 3
-                        jeu.grid[lgn][cln] = 0
-
-                        if valeur > meilleur_valeur:
-                            meilleur_valeur = valeur
-                            meilleur_coup = (lgn, cln)
-
-            if meilleur_coup != None :
-                jeu.play_move(meilleur_coup[0], meilleur_coup[1])
-            else :
-                break
+            for depth in range(1, p + 1):
+                if time.time() - start > DureeMaximalEnSeconde:
+                    break
+            
+                if j == joueur:
+                    m = -sys.maxsize
+                    for lgn in range(self.n):
+                        for cln in range(self.m):
+                            if self.grid[lgn][cln] == 0:
+                                self.grid[lgn][cln] = joueur
+                                v = self.min_max_align(depth, alpha, beta, joueur)
+                                self.grid[lgn][cln] = 0
+                                if v > m:
+                                    m = v
+                                    if m >= beta:
+                                        return m
+                                    if m > alpha:
+                                        alpha = m
+                    
                 
-        player = jeu.next_player() # Passage au joueur suivant
-        print(jeu)  # Affichage de la grille après le coup
-        
+                else:
+                    m = sys.maxsize
+                    for lgn in range(self.n):
+                        for cln in range(self.m):
+                            if self.grid[lgn][cln] == 0:
+                                self.grid[lgn][cln] = 3 - joueur
+                                v = self.min_max_align(depth, alpha, beta, joueur)
+                                self.grid[lgn][cln] = 0
+                                if v > m:
+                                    m = v
+                                    if m <= alpha:
+                                        return m
+                                    if m < alpha:
+                                        beta = m
+            return m
 
-    if jeu.gagnant(1):
-        print("\nLe H_vide a gagné !")
-    elif jeu.gagnant(2):
-        print("\nLe H_align a gagné !")
-    else:
-        print("\nMatch nul !")
 
-
-        
-
-
-        
 
             
 

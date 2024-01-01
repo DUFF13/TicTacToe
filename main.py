@@ -22,13 +22,13 @@ if __name__ == '__main__':
 
 
 '''       TODO
-      Se renseigner sur le sujet : itérative deepening
+      Se renseigner sur le sujet : itérative deepening -> fait
 #       Pour l'heuristique : 
           - tester différentes profondeur (jusqu'à p5) --> algo naif OK
 
           - joueur uniquement les cases continues à celles déjà jouées --> on empêche l'autre de gagner OK
           - Tester nos heuristiques les unes contres les autres OK ==> Align bien meilleure
-          - Essayer de battre notre IA en 4x4 et 5x5 OK
+          - Essayer de battre notre IA en 4x4 et 5x5 OK -> malheureusement fait
 
 
 #       Pour l'IA : 

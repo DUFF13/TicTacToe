@@ -1,5 +1,7 @@
 import sys
 import tic_tac_toe as ttt
+import exception
+import time
 
 def jouer_partie_IA(jeu : ttt.TTT):
     ''' jouer une partie contre l'IA en 1v1'''
@@ -17,7 +19,7 @@ def jouer_partie_IA(jeu : ttt.TTT):
                 cln = int(input("Entrez le numéro de colonne (0 à {}): ".format(jeu.m - 1)))
                 jeu.play_move(lgn, cln)
                 
-            except (ValueError, IndexError, ttt.InvalidMoveError):
+            except (ValueError, IndexError, exception.InvalidMoveError):
                 print("Coup invalide. Veuillez réessayer.")
                 continue
         else:
@@ -28,7 +30,7 @@ def jouer_partie_IA(jeu : ttt.TTT):
                 for cln in range(jeu.m):
                     if jeu.grid[lgn][cln] == 0:
                         jeu.grid[lgn][cln] = 2
-                        valeur = jeu.min_max(3, -sys.maxsize, sys.maxsize, 2)  # Profondeur à adapter ici 3
+                        valeur = jeu.min_max_vide(3, -sys.maxsize, sys.maxsize, 2)  # Profondeur à adapter ici 3
                         jeu.grid[lgn][cln] = 0
 
                         if valeur > meilleur_valeur:
@@ -58,6 +60,8 @@ def jouer_IA_vs_IA(jeu : ttt.TTT):
     
     while (player != 0 and not(jeu.gagnant(1)) and not(jeu.gagnant(2))):
         if player == 1:
+            start = time.time()
+
             print("\nTour du joueur 1.")
             meilleur_coup = None
             meilleur_valeur = -sys.maxsize
@@ -65,7 +69,7 @@ def jouer_IA_vs_IA(jeu : ttt.TTT):
                 for cln in range(jeu.m):
                     if jeu.grid[lgn][cln] == 0:
                         jeu.grid[lgn][cln] = 2
-                        valeur = jeu.min_max_align(3, -sys.maxsize, sys.maxsize, 2 )  # Profondeur à adapter ici 3
+                        valeur = jeu.min_max_IterativDeepening(4, -sys.maxsize, sys.maxsize, 2 )  # Profondeur à adapter ici 3
                         jeu.grid[lgn][cln] = 0
 
                         if valeur > meilleur_valeur:
@@ -74,10 +78,12 @@ def jouer_IA_vs_IA(jeu : ttt.TTT):
 
             if meilleur_coup != None :
                 jeu.play_move(meilleur_coup[0], meilleur_coup[1])
+                print("durée du coup : " + str(time.time() - start))
             else :
                 break
             
         else:
+            start = time.time()
             print("\nTour du joueur 2.")
             meilleur_coup = None
             meilleur_valeur = -sys.maxsize
@@ -85,7 +91,7 @@ def jouer_IA_vs_IA(jeu : ttt.TTT):
                 for cln in range(jeu.m):
                     if jeu.grid[lgn][cln] == 0:
                         jeu.grid[lgn][cln] = 2
-                        valeur = jeu.min_max_vide(3, -sys.maxsize, sys.maxsize, 2)  # Profondeur à adapter ici 3
+                        valeur = jeu.min_max_align(4, -sys.maxsize, sys.maxsize, 2)  # Profondeur à adapter ici 3
                         jeu.grid[lgn][cln] = 0
 
                         if valeur > meilleur_valeur:
@@ -94,6 +100,7 @@ def jouer_IA_vs_IA(jeu : ttt.TTT):
 
             if meilleur_coup != None :
                 jeu.play_move(meilleur_coup[0], meilleur_coup[1])
+                print("durée du coup : " + str(time.time() - start))
             else :
                 break
                 
