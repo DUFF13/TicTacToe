@@ -3,8 +3,6 @@ import numpy as np
 import exception
 import time
 
-DureeMaximalEnSeconde = 5
-
 class TTT():
 
     ''' Class pour le jeu ou n et m sont les dimensions du jeu et k le nombre de symbole à aligner pour gagner'''
@@ -188,22 +186,34 @@ class TTT():
         algn_max_adversaire = 0
         adversaire = 3 - joueur # joueur = 1 ou 2 ...
         tab_direction = [(1, 0), (1, 1), (0, 1), (-1, 1)]
+
+        def alignement_possible(position, direction,  joueur):
+            compteur = 0
+            i, j = position
+            while (0 <= i and i < self.n and 0 <= j and j < self.m and self.grid[i][j] == joueur):
+                i, j = i + direction[0], j + direction[1]
+                compteur +=1
+            return compteur >= self.k
+
         for i in range(self.n):
             for j in range(self.m):
                 if self.grid[i][j] == joueur:
-                    for l in range(4):
-                        l = self.longueur_alignement((i, j), tab_direction[l], joueur)
-                        if (l == self.k):
-                            return sys.maxsize # si le joueur est gagnant on renvoie MAX_INT (pas trop équivalent du C mais ça fait l'affaire)
-                        if (l > algn_max_joueur): # demander à Aubry
-                            algn_max_joueur = l
+                    for a in range(4):
+                        if alignement_possible((i, j),tab_direction[a], joueur):
+                            l = self.longueur_alignement((i, j), tab_direction[a], joueur)
+                            if (l == self.k):
+                                return sys.maxsize # si le joueur est gagnant on renvoie MAX_INT (pas trop équivalent du C mais ça fait l'affaire)
+                            if (l > algn_max_joueur): # demander à Aubry
+                                algn_max_joueur = l
+
                 elif (self.grid[i][j] == adversaire):
-                    for l in range(4):
-                        l = self.longueur_alignement((i, j), tab_direction[l], adversaire)
-                        if (l == self.k):
-                            return (- sys.maxsize) # à modifier
-                        if (l > algn_max_adversaire):
-                            algn_max_adversaire = l
+                    for a in range(4):
+                        if alignement_possible((i, j),tab_direction[a], adversaire):
+                            l = self.longueur_alignement((i, j), tab_direction[a], adversaire)
+                            if (l == self.k):
+                                return (- sys.maxsize) # à modifier
+                            if (l > algn_max_adversaire):
+                                algn_max_adversaire = l
 
         return  (self.k * ((algn_max_joueur - algn_max_adversaire) * algn_max_joueur))# plus c'est grand, plus le joueur a une position favorable
          # on renvoie un résulat un peu quelconque qui juste plus grand si joueur est favorable
@@ -294,25 +304,23 @@ class TTT():
 
 
     def min_max_IterativDeepening(self, p : int, alpha : int, beta : int, joueur : int) -> int:
-            ''' algorithme minimax '''
-            j = self.next_player()
+            ''' algorithme minimax avec iterativ deepening search'''
             start = time.time()
+            j = self.next_player()
 
 
-            if (self.gagnant(joueur) or self.gagnant(3 - joueur) or j == 0 or p == 0 or time.time() - start > DureeMaximalEnSeconde):
-                return self.heuristique_align(joueur)
-            
             for depth in range(1, p + 1):
-                if time.time() - start > DureeMaximalEnSeconde:
-                    break
-            
-                if j == joueur:
+                if (self.gagnant(joueur) or self.gagnant(3 - joueur) or j == 0 or p == 0):
+                    return self.heuristique_align(joueur)
+                    
+                if j == joueur: # Noeud Max
                     m = -sys.maxsize
+
                     for lgn in range(self.n):
                         for cln in range(self.m):
                             if self.grid[lgn][cln] == 0:
                                 self.grid[lgn][cln] = joueur
-                                v = self.min_max_align(depth, alpha, beta, joueur)
+                                v = self.min_max_IterativDeepening(depth, alpha, beta, joueur)
                                 self.grid[lgn][cln] = 0
                                 if v > m:
                                     m = v
@@ -320,15 +328,15 @@ class TTT():
                                         return m
                                     if m > alpha:
                                         alpha = m
-                    
                 
-                else:
+                
+                else: # Noeud min
                     m = sys.maxsize
                     for lgn in range(self.n):
                         for cln in range(self.m):
                             if self.grid[lgn][cln] == 0:
                                 self.grid[lgn][cln] = 3 - joueur
-                                v = self.min_max_align(depth, alpha, beta, joueur)
+                                v = self.min_max_IterativDeepening(depth, alpha, beta, joueur)
                                 self.grid[lgn][cln] = 0
                                 if v > m:
                                     m = v

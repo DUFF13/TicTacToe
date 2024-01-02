@@ -17,7 +17,7 @@ if __name__ == '__main__':
     nb_player = int(2)
     
     jeu = ttt.TTT(n, m, nb_player, k)
-    jouer.jouer_IA_vs_IA(jeu)
+    jouer.jouer_partie_IA(jeu)
 
 
 
@@ -28,7 +28,7 @@ if __name__ == '__main__':
 
           - joueur uniquement les cases continues à celles déjà jouées --> on empêche l'autre de gagner OK
           - Tester nos heuristiques les unes contres les autres OK ==> Align bien meilleure
-          - Essayer de battre notre IA en 4x4 et 5x5 OK -> malheureusement fait
+          - Essayer de battre notre IA en 4x4 et 5x5 OK -> malheureusement fait, maintenant c'est bon normalement, pas possible de win
 
 
 #       Pour l'IA : 
