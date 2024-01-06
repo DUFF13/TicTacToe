@@ -92,7 +92,7 @@ def jouer_partie(jeu : ttt.TTT):
 
 
 
-def jouer_partie_IA(jeu : ttt.TTT):
+def jouer_partie_IA(jeu : ttt.TTT, heuristic):
     ''' jouer une partie contre l'IA en 1v1'''
     print("Vous jouez contre l'IA. Voici la grille de jeu :\n")
     print(jeu)  # Affichage de la grille de jeu initiale
@@ -120,7 +120,10 @@ def jouer_partie_IA(jeu : ttt.TTT):
                 for cln in range(jeu.m):
                     if jeu.grid[lgn][cln] == 0:
                         jeu.grid[lgn][cln] = 2
-                        valeur = jeu.min_max_IterativDeepening(3, float('-inf'), float('inf'), joueur)  # Profondeur à adapter ici 3
+                        if heuristic == 1:
+                            valeur = jeu.min_max_align(3, float('-inf'), float('inf'), joueur)  # Profondeur à adapter ici 3
+                        elif heuristic == 2:
+                            valeur = jeu.min_max_IterativDeepening(3, float('-inf'), float('inf'), joueur)  # Profondeur à adapter ici 3
                         jeu.grid[lgn][cln] = 0
 
 

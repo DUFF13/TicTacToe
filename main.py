@@ -13,14 +13,36 @@ choose = """
 
 
 if __name__ == '__main__':
-    #n = int(sys.argv[1])
-    #m = int(sys.argv[2])
-    #nb_player = int(sys.argv[3]) # pour le moment, uniquement deux joueurs
-    #k = int(sys.argv[4])
+    print('Welcome to our MNK game')
 
-    n,m = int(input("Choisir n (par défaut : 3)") or '3'), int(input("Choisir m (par défaut : 3)") or '3')
-    k = int(input("Choisir le nombre de case à aligner pour gagner k : (par défaut : 3)") or '3')
-    nb_player = int(2)
+
+    choose_game = int(input(choose))
+    if choose_game == 1:
+        n, m = int(input("choose m the number of rows (by default : 3)") or '3'), int(input("Choose n the number of columns (by default : 3)") or '3') # j'ai inversé car le jeu s'appelle mnk et non nmk ...
+        k = int(input("Choose k (by default : 3)") or '3')
+        nb_player = int(input("2 or 3 players (by default 2)"))
+        jeu = ttt.TTT(n, m, nb_player, k)
+
+        jouer.jouer_partie(jeu)
+
+    elif choose_game == 2:
+        n, m = int(input("choose m the number of rows (by default : 3)") or '3'), int(input("Choose n the number of columns (by default : 3)") or '3') # j'ai inversé car le jeu s'appelle mnk et non nmk ...
+        k = int(input("Choose k (by default : 3)") or '3')
+        jeu = ttt.TTT(n, m, 2, k)
+
+        AI = int(input('Which AI do you want to try ? : (1 for Minimax, 2 for Minimax with iterativ deepening)'))
+        jouer.jouer_partie_IA(jeu, AI)
+
+    elif choose_game == 3:
+        n, m = int(input("choose m the number of rows (by default : 3)") or '3'), int(input("Choose n the number of columns (by default : 3)") or '3') # j'ai inversé car le jeu s'appelle mnk et non nmk ...
+        k = int(input("Choose k (by default : 3)") or '3')
+        jeu = ttt.TTT(n, m, 2, k)
+        print("For the moment only minimax with iterativ deepening against minimax")
+        jouer.jouer_IA_vs_IA(jeu)
+
+
+
+
     
     jeu = ttt.TTT(n, m, nb_player, k)
     jouer.jouer_IA_vs_IA(jeu)
