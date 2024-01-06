@@ -197,21 +197,21 @@ class TTT():
             for j in range(self.m):
                 if self.grid[i][j] == joueur:
                     if self.coup_gagnant((i, j), joueur) : # Si le coup est gagnant on oublie la défence et on joue
-                        return sys.maxsize
+                        return float('inf')
                     else :
                         w_max_joueur += self.cases_vides((i, j)) 
                 
                                 
                 elif (self.grid[i][j] == adversaire):
                     if self.coup_gagnant((i, j), adversaire) :
-                        return -sys.maxsize
+                        return float('-inf')
                     else :
                         w_max_adversaire += self.cases_vides((i, j))
                     
         return  (self.k * (w_max_joueur - w_max_adversaire) * w_max_joueur) # plus c'est grand, plus le joueur a une position favorable
 
 
-    def heuristique_align(self, joueur) -> int: 
+    def heuristique_align(self, joueur) -> float: 
         ''' heuristique pour min_max, à déterminer (naîve : compare les longueurs d'alignement max) '''
         algn_max_joueur = 0
         algn_max_adversaire = 0
@@ -219,12 +219,22 @@ class TTT():
         tab_direction = [(1, 0), (1, 1), (0, 1), (-1, 1)]
 
 
-        def alignement_possible(position, direction,  joueur):
+        def alignement_possible(position, direction : tuple,  joueur : int) -> bool:
             compteur = 0
             i, j = position
             while (0 <= i and i < self.n and 0 <= j and j < self.m and (self.grid[i][j] == joueur or self.grid[i][j] == 0)):
+
                 i, j = i + direction[0], j + direction[1]
                 compteur +=1
+
+            a, b = position
+
+            i, j = a - direction[0], b - direction[1]
+
+            while (0 <= i and i < self.n and 0 <= j and j < self.m and (self.grid[i][j] == 0 or self.grid[i][j] == joueur)):
+                compteur += 1
+                i, j = i - direction[0], j - direction[1]
+
             return compteur >= self.k
 
         for i in range(self.n):
@@ -234,7 +244,7 @@ class TTT():
                         if alignement_possible((i, j),tab_direction[a], joueur):
                             l = self.longueur_alignement((i, j), tab_direction[a], joueur)
                             if (l == self.k):
-                                return sys.maxsize # si le joueur est gagnant on renvoie MAX_INT (pas trop équivalent du C mais ça fait l'affaire)
+                                return float('inf') # si le joueur est gagnant on renvoie MAX_INT (pas trop équivalent du C mais ça fait l'affaire)
                             if (l > algn_max_joueur): # demander à Aubry
                                 algn_max_joueur = l
 
@@ -243,16 +253,19 @@ class TTT():
                         if alignement_possible((i, j),tab_direction[a], adversaire):
                             l = self.longueur_alignement((i, j), tab_direction[a], adversaire)
                             if (l == self.k):
-                                return (- sys.maxsize) # à modifier
+                                return float('-inf') # à modifier
                             if (l > algn_max_adversaire):
                                 algn_max_adversaire = l
 
+        score_joueur = self.k * (algn_max_joueur - algn_max_adversaire) * algn_max_joueur
+        score_adversaire = self.k * (algn_max_adversaire - algn_max_joueur) * algn_max_adversaire
+        return score_joueur - score_adversaire
 
         
         
 
-        return  (self.k * ((algn_max_joueur - algn_max_adversaire) * algn_max_joueur)) # plus c'est grand, plus le joueur a une position favorable
-         # on renvoie un résulat un peu quelconque qui juste plus grand si joueur est favorable
+        # return  (self.k * ((algn_max_joueur - algn_max_adversaire) * algn_max_joueur)) # plus c'est grand, plus le joueur a une position favorable
+        #  # on renvoie un résulat un peu quelconque qui juste plus grand si joueur est favorable
 
 
 
@@ -272,32 +285,30 @@ class TTT():
                             self.grid[lgn][cln] = joueur                            
                             score = self.min_max_align(p-1, alpha, beta, joueur)
                             self.grid[lgn][cln] = 0
-                            if score > m:                            
-                                m = score
-                            if m >= beta:
-                                return m
-                            alpha = max(alpha, score)
-                            if alpha >= beta:
-                                break
+                            if score != None:
+                                if score > m:                            
+                                    m = score
+                                alpha = max(alpha, score)
+                                if alpha >= beta:
+                                    break
 
                 return m
 
             else: # noeud min
-                m = float('inf') # essaie de modifier
+                m = float('inf') 
                 for lgn in range(self.n):
                     for cln in range(self.m):
                         if self.grid[lgn][cln] == 0:                                
                             self.grid[lgn][cln] = 3 - joueur                            
                             score = self.min_max_align(p - 1, alpha, beta, joueur)
                             self.grid[lgn][cln] = 0
-                            if score < m:
-                                m = score
-                            beta = min(beta, score)
-                            if m <= alpha:
-                                return m
-                            if alpha >= beta:
-                                break
-                            
+                            if score != None:
+                                if score < m:
+                                    m = score
+                                beta = min(beta, score)
+                                if alpha >= beta:
+                                    break
+                                
                 return m
 
 
@@ -348,21 +359,20 @@ class TTT():
             j = self.next_player()
 
 
-            # for depth in range(1, p + 1):
 
             if (self.gagnant(joueur) or self.gagnant(3 - joueur) or j == 0 or p == 0):
                 return self.heuristique_align(joueur)
             
 
+            for depth in range(1, p + 1):
 
-            if j == joueur: # Noeud Max                   
-                m = float('-inf')
-                for depth in range(1, p + 1):
+                if j == joueur: # Noeud Max                   
+                    m = float('-inf')
                     for lgn in range(self.n):
                         for cln in range(self.m):
                             if self.grid[lgn][cln] == 0:
                                 self.grid[lgn][cln] = joueur
-                                score = self.min_max_IterativDeepening(depth - 1, alpha, beta, joueur)
+                                score = self.min_max_align(depth - 1, alpha, beta, joueur)
                                 self.grid[lgn][cln] = 0
                                 if score != None:
                                     if score > m:
@@ -370,16 +380,15 @@ class TTT():
                                     alpha = max(alpha, score)
                                     if alpha >= beta:
                                         break
-                return m
+                    return m
         
-            else: # Noeud min
-                m = float('inf')      
-                for depth in range(1, p + 1):           
+                else: # Noeud min
+                    m = float('inf')                 
                     for lgn in range(self.n):
                         for cln in range(self.m):
                             if self.grid[lgn][cln] == 0:
                                 self.grid[lgn][cln] = 3 - joueur
-                                score = self.min_max_IterativDeepening(depth - 1, alpha, beta, joueur)
+                                score = self.min_max_align(depth - 1, alpha, beta, joueur)
                                 self.grid[lgn][cln] = 0
                                 if score != None:
                                     if score < m:
@@ -388,7 +397,7 @@ class TTT():
                                     if alpha >= beta:
                                         break
 
-                return m
+                    return m
 
 
 

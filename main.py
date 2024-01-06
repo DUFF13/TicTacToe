@@ -4,6 +4,12 @@ import tic_tac_toe as ttt
 import jouer
 
 
+choose = """
+1. Player vs Player (2 or 3 player)
+2. Player vs AI (minimax and choose your heuristic or Monte Carlo)
+3. AI vs AI
+"""
+
 
 
 if __name__ == '__main__':
@@ -17,7 +23,8 @@ if __name__ == '__main__':
     nb_player = int(2)
     
     jeu = ttt.TTT(n, m, nb_player, k)
-    jouer.jouer_partie_IA(jeu)
+    jouer.jouer_IA_vs_IA(jeu)
+
 
 
 
@@ -30,6 +37,8 @@ if __name__ == '__main__':
           - Tester nos heuristiques les unes contres les autres OK ==> Align bien meilleure
           - Essayer de battre notre IA en 4x4 et 5x5 OK -> malheureusement fait, maintenant c'est bon normalement, pas possible de win
 
+
+#        algorithme probabiliste -> monte carlo (termine mais pas forcément correct) et peut-être las vegas si je trouve des idées (l'inverse)
 
 #       Pour l'IA : 
         Si 3 joueurs : 1 IA vs 2 humains ( min min max), deux joueurs qui s'allient pour nous faire perdre, comme deux coups à la place d'un coup
