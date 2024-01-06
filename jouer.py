@@ -97,8 +97,7 @@ def jouer_partie_IA(jeu : ttt.TTT, heuristic):
     print("Vous jouez contre l'IA. Voici la grille de jeu :\n")
     print(jeu)  # Affichage de la grille de jeu initiale
 
-    joueur = 1 # int(input("Choisir : l'humain commence (1) | l'IA commence (2)"))
-
+    joueur = int(input("Choisir : l'humain commence (1) | l'IA commence (2)"))
 
     while (joueur != 0 and not(jeu.gagnant(1)) and not(jeu.gagnant(2))):
         if joueur == 1:
@@ -220,3 +219,40 @@ def jouer_IA_vs_IA(jeu : ttt.TTT):
     else:
         print("\nMatch nul !")
 
+
+
+
+def jouer_partie_IA_probabiliste(jeu : ttt.TTT):
+    ''' jouer une partie contre l'IA en 1v1'''
+    print("Vous jouez contre l'IA. Voici la grille de jeu :\n")
+    print(jeu)  # Affichage de la grille de jeu initiale
+
+    joueur = 1 
+    while (joueur != 0 and not(jeu.gagnant(1)) and not(jeu.gagnant(2))):
+        if joueur == 1:
+            print("\nTour du joueur humain.")
+            try:
+                lgn = int(input("Entrez le numéro de ligne (0 à {}): ".format(jeu.n - 1)))
+                cln = int(input("Entrez le numéro de colonne (0 à {}): ".format(jeu.m - 1)))
+                jeu.play_move(lgn, cln)
+                
+            except (ValueError, IndexError, exception.InvalidMoveError):
+                print("Coup invalide. Veuillez réessayer.")
+                continue
+        else: # dans cette version, l'IA est toujours le joueur max, i.e elle commence jamais
+            start = time.time()
+            _, i, j = jeu.MonteCarlo()
+
+            jeu.play_move(i, j)
+            print("durée du coup : " + str(time.time() - start))
+                
+        joueur = jeu.next_player() # Passage au joueur suivant
+        print(jeu)  # Affichage de la grille après le coup
+        
+
+    if jeu.gagnant(1):
+        print("\nLe joueur humain a gagné !")
+    elif jeu.gagnant(2):
+        print("\nL'IA a gagné !")
+    else:
+        print("\nMatch nul !")

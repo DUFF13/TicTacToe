@@ -16,6 +16,7 @@ if __name__ == '__main__':
     print('Welcome to our MNK game')
 
 
+
     choose_game = int(input(choose))
     if choose_game == 1:
         n, m = int(input("choose m the number of rows (by default : 3)") or '3'), int(input("Choose n the number of columns (by default : 3)") or '3') # j'ai inversé car le jeu s'appelle mnk et non nmk ...
@@ -33,6 +34,7 @@ if __name__ == '__main__':
         AI = int(input('Which AI do you want to try ? : (1 for Minimax, 2 for Minimax with iterativ deepening)'))
         jouer.jouer_partie_IA(jeu, AI)
 
+
     elif choose_game == 3:
         n, m = int(input("choose m the number of rows (by default : 3)") or '3'), int(input("Choose n the number of columns (by default : 3)") or '3') # j'ai inversé car le jeu s'appelle mnk et non nmk ...
         k = int(input("Choose k (by default : 3)") or '3')
@@ -42,10 +44,6 @@ if __name__ == '__main__':
 
 
 
-
-    
-    jeu = ttt.TTT(n, m, nb_player, k)
-    jouer.jouer_IA_vs_IA(jeu)
 
 
 

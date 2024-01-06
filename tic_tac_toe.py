@@ -36,6 +36,14 @@ class TTT():
 
         return grid
 
+    def copy(self):
+        ''' méthode pour créer une copie de notre grille'''
+        ttt = TTT(self.n, self.m, self.nb_player, self.k)
+        grid = np.copy(self.grid)
+
+        ttt.grid = grid
+        ttt.nb_coup = self.nb_coup
+        return ttt
 
     def repartition(self) -> np.ndarray:
         ''' tabbleau contenant le nombre de coups joué pour chaque joueur '''
@@ -49,8 +57,6 @@ class TTT():
         return game # O(n*m) bof
 
 
-    def partie_terminee(self):
-        pass
 
     def next_player(self) -> int:
         ''' méthode pour savoir qui est le prochain joueur à jouer '''
@@ -418,3 +424,33 @@ class TTT():
         return row, col
             
         
+
+
+    def MonteCarlo(self): # marche pas pour le moment
+        nombre_simulations = 5
+        mouvement_valides = [(i, j) for i in range(self.n) for j in range(self.m) if self.is_valid_move(i, j)] # teste tous les mouvements valides de la grille
+
+        scores = []
+        for move in mouvement_valides:
+            score = 0
+            a, b = move
+
+            for _ in range(nombre_simulations):
+                simulation = self.copy()
+                simulation.play_move(a, b)
+
+            
+                while(self.nb_coup != (self.n * self.m)  and not(self.gagnant(1)) and not(self.gagnant(2))):
+                    
+                    random1, random2 = simulation.random_ai()
+                    simulation.play_move(random1, random2)
+
+                if simulation.gagnant(1):
+                    score += 10
+                else:
+                    score += 5
+                
+            scores.append((score, random1, random2))
+
+        return max(scores, key = lambda x : x[0])
+                
