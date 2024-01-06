@@ -150,7 +150,7 @@ def jouer_IA_vs_IA(jeu : ttt.TTT):
     joueur = 1
     premier_coup = True
     
-    while (joueur != 0 and not(jeu.gagnant(1)) and not(jeu.gagnant(2))):
+    while (jeu.nb_coup != (jeu.n * jeu.m)  and not(jeu.gagnant(1)) and not(jeu.gagnant(2))):
         if premier_coup:
             i, j = jeu.random_ai()
             jeu.play_move(i, j)        
@@ -214,6 +214,6 @@ def jouer_IA_vs_IA(jeu : ttt.TTT):
         print("\niterativ deepening a gagné !")
     elif jeu.gagnant(2):
         print("\nLe min_max align a gagné !")
-    elif joueur == 0:
+    else:
         print("\nMatch nul !")
 

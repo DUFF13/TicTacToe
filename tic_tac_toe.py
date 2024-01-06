@@ -14,6 +14,7 @@ class TTT():
         self.nb_player = nb_player
         self.k = k  # k symbol to win
         self.grid = np.zeros((n,m), dtype= int) # game grid
+        self.nb_coup = 0
 
 
     def __repr__(self) -> str:
@@ -45,8 +46,11 @@ class TTT():
             for j in range(self.m):
                 game[self.grid[i][j]] += 1
 
-        return game # O(n*m)
+        return game # O(n*m) bof
 
+
+    def partie_terminee(self):
+        pass
 
     def next_player(self) -> int:
         ''' méthode pour savoir qui est le prochain joueur à jouer '''
@@ -76,6 +80,7 @@ class TTT():
             return False
         else:
             return self.grid[row][column] == 0
+        
 
     def play_move(self, row : int, column : int) -> None:
         ''' méthode pour jouer un coup'''
@@ -83,7 +88,7 @@ class TTT():
         player = self.next_player()
         if self.is_valid_move(row, column):
             self.grid[row][column] = player
-            
+            self.nb_coup +=1
         else:
             raise exception.InvalidMoveError()
         
