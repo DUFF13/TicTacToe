@@ -2,6 +2,7 @@ import sys
 import numpy as np
 import exception
 import time
+import random
 
 class TTT():
 
@@ -68,16 +69,25 @@ class TTT():
         return res
 
 
-    def play_move(self, rows : int, columns : int) -> None:
+    def is_valid_move(self, row : int, column : int) -> bool:
+        ''' méthode pour savoir si le coup est possible '''
+
+        if ((row < 0) or (row >= self.n) or (column < 0) or (column >= self.m)):
+            return False
+        else:
+            return self.grid[row][column] == 0
+
+    def play_move(self, row : int, column : int) -> None:
         ''' méthode pour jouer un coup'''
         
         player = self.next_player()
-        if (player == 0) or (self.grid[rows][columns] != 0): # si le coup est impossible
-            raise exception.InvalidMoveError()
-
-        else:
-            self.grid[rows][columns] = player
+        if self.is_valid_move(row, column):
+            self.grid[row][column] = player
             
+        else:
+            raise exception.InvalidMoveError()
+        
+
     ''' Directions:
             - east: cln + 1                -> di = (0, 1)
             - south-east: cln + 1, lgn + 1 -> di = (1, 1)
@@ -88,16 +98,37 @@ class TTT():
     def alignement(self, i : tuple, di : tuple, joueur : int) -> bool: # i and di are type (int * int)
         ''' methode  pour savoir si il y a un alignement pour le joueur dans une direction donnée à partir de la case i'''
 
-        (lgn, cln) = i
+        (row, col) = i
         (dl, dc) = di
 
-        for j in range(self.k):
-            if (cln < 0 or cln >= self.m or lgn < 0 or lgn >= self.n):
+        # east  :
+        if (di == (0, 1)):
+            if col + self.k > self.m:
                 return False
-            if (self.grid[lgn][cln] != joueur):
+            
+        # south : 
+        if (di == (1, 0)):
+            if row + self.k > self.n:
                 return False
-            cln += dc
-            lgn += dl
+                
+        # south-east :
+        if (di == (1, 1)):
+            if ((row + self.k > self.n) or (col + self.k > self.m)) :
+                return False
+            
+        # south-west :
+        if (di == (1, -1)):
+            if ((col - self.k < 0) or (row + self.k > self.n)):
+                return False
+            
+
+        for _ in range(self.k):
+            if (col < 0 or col >= self.m or row < 0 or row >= self.n):
+                return False
+            if (self.grid[row][col] != joueur):
+                return False
+            col += dc
+            row += dl
         return True # O(k)
 
 
@@ -144,7 +175,7 @@ class TTT():
         return free_box
 
 
-    def coup_gagnant(self, i : tuple, joueur) -> bool :
+    def coup_gagnant(self, i : tuple, joueur) -> bool : # que fait cette fonction de plus que gagnant ?
         x, y = i
         tab_direction = [(0,1), (0,-1), (1,0), (-1,0), (1,1), (1,-1), (-1,1), (-1,-1)]
         
@@ -187,10 +218,11 @@ class TTT():
         adversaire = 3 - joueur # joueur = 1 ou 2 ...
         tab_direction = [(1, 0), (1, 1), (0, 1), (-1, 1)]
 
+
         def alignement_possible(position, direction,  joueur):
             compteur = 0
             i, j = position
-            while (0 <= i and i < self.n and 0 <= j and j < self.m and self.grid[i][j] == joueur):
+            while (0 <= i and i < self.n and 0 <= j and j < self.m and (self.grid[i][j] == joueur or self.grid[i][j] == 0)):
                 i, j = i + direction[0], j + direction[1]
                 compteur +=1
             return compteur >= self.k
@@ -215,7 +247,11 @@ class TTT():
                             if (l > algn_max_adversaire):
                                 algn_max_adversaire = l
 
-        return  (self.k * ((algn_max_joueur - algn_max_adversaire) * algn_max_joueur))# plus c'est grand, plus le joueur a une position favorable
+
+        
+        
+
+        return  (self.k * ((algn_max_joueur - algn_max_adversaire) * algn_max_joueur)) # plus c'est grand, plus le joueur a une position favorable
          # on renvoie un résulat un peu quelconque qui juste plus grand si joueur est favorable
 
 
@@ -225,39 +261,43 @@ class TTT():
 
             j = self.next_player()
             
-            if (self.gagnant(joueur) or self.gagnant(3 - joueur) or j == 0 or p == 0):
+            if (self.gagnant(3 - joueur) or self.gagnant(joueur) or j == 0 or p == 0):
                 return self.heuristique_align(joueur)
 
-            if (j == joueur): # noeud max
-                m = - sys.maxsize
+            if j == joueur: # noeud max
+                m = float('-inf')
                 for lgn in range(self.n):
                     for cln in range(self.m):
-                        if self.grid[lgn][cln] == 0:
-                            self.grid[lgn][cln] = joueur
-                            v = self.min_max_align(p-1, alpha, beta, joueur)
+                        if self.grid[lgn][cln] == 0:                                
+                            self.grid[lgn][cln] = joueur                            
+                            score = self.min_max_align(p-1, alpha, beta, joueur)
                             self.grid[lgn][cln] = 0
-                            if v > m:
-                                m = v
-                                if m >= beta:
-                                    return m
-                                if m > alpha:
-                                    alpha = m
+                            if score > m:                            
+                                m = score
+                            if m >= beta:
+                                return m
+                            alpha = max(alpha, score)
+                            if alpha >= beta:
+                                break
+
                 return m
 
             else: # noeud min
-                m = sys.maxsize # essaie de modifier
+                m = float('inf') # essaie de modifier
                 for lgn in range(self.n):
                     for cln in range(self.m):
-                        if self.grid[lgn][cln] == 0:
-                            self.grid[lgn][cln] = 3 - joueur
-                            v = self.min_max_align(p - 1, alpha, beta, joueur)
+                        if self.grid[lgn][cln] == 0:                                
+                            self.grid[lgn][cln] = 3 - joueur                            
+                            score = self.min_max_align(p - 1, alpha, beta, joueur)
                             self.grid[lgn][cln] = 0
-                            if v < m:
-                                m = v
-                                if m <= alpha:
-                                    return m
-                                if m < beta:
-                                    beta = m
+                            if score < m:
+                                m = score
+                            beta = min(beta, score)
+                            if m <= alpha:
+                                return m
+                            if alpha >= beta:
+                                break
+                            
                 return m
 
 
@@ -269,85 +309,98 @@ class TTT():
             
             if (self.gagnant(joueur) or self.gagnant(3 - joueur) or j == 0 or p == 0):
                 return self.heuristique_vide(joueur)
-
-            if (j == joueur): # noeud max
-                m = - sys.maxsize
+            
+            if j == joueur: # Noeud Max
+                m = float('-inf')
                 for lgn in range(self.n):
                     for cln in range(self.m):
                         if self.grid[lgn][cln] == 0:
                             self.grid[lgn][cln] = joueur
-                            v = self.min_max_vide(p-1, alpha, beta, joueur)
+                            score = self.min_max_vide(p - 1, alpha, beta, joueur)
                             self.grid[lgn][cln] = 0
-                            if v > m:
-                                m = v
-                                if m >= beta:
-                                    return m
-                                if m > alpha:
-                                    alpha = m
+                            if score > m:
+                                m = score
+                            alpha = max(alpha, score)
+                            if alpha >= beta:
+                                break
                 return m
-
-            else: # noeud min
-                m = sys.maxsize # essaie de modifier
+            
+            else: # Noeud min
+                m = float('inf')      
                 for lgn in range(self.n):
                     for cln in range(self.m):
                         if self.grid[lgn][cln] == 0:
                             self.grid[lgn][cln] = 3 - joueur
-                            v = self.min_max_vide(p - 1, alpha, beta, joueur)
+                            score = self.min_max_vide(p - 1, alpha, beta, joueur)
                             self.grid[lgn][cln] = 0
-                            if v < m:
-                                m = v
-                                if m <= alpha:
-                                    return m
-                                if m < beta:
-                                    beta = m
+                            if score < m:
+                                m = score
+                            beta = min(beta, score)
+                            if alpha >= beta:
+                                break
                 return m
 
 
     def min_max_IterativDeepening(self, p : int, alpha : int, beta : int, joueur : int) -> int:
             ''' algorithme minimax avec iterativ deepening search'''
-            start = time.time()
+            # start = time.time() # utilise si l'on souhaite rajouter une fonctionnalité de durée maximal de recherche
+            
             j = self.next_player()
 
 
-            for depth in range(1, p + 1):
-                if (self.gagnant(joueur) or self.gagnant(3 - joueur) or j == 0 or p == 0):
-                    return self.heuristique_align(joueur)
-                    
-                if j == joueur: # Noeud Max
-                    m = -sys.maxsize
+            # for depth in range(1, p + 1):
 
+            if (self.gagnant(joueur) or self.gagnant(3 - joueur) or j == 0 or p == 0):
+                return self.heuristique_align(joueur)
+            
+
+
+            if j == joueur: # Noeud Max                   
+                m = float('-inf')
+                for depth in range(1, p + 1):
                     for lgn in range(self.n):
                         for cln in range(self.m):
                             if self.grid[lgn][cln] == 0:
                                 self.grid[lgn][cln] = joueur
-                                v = self.min_max_IterativDeepening(depth, alpha, beta, joueur)
+                                score = self.min_max_IterativDeepening(depth - 1, alpha, beta, joueur)
                                 self.grid[lgn][cln] = 0
-                                if v > m:
-                                    m = v
-                                    if m >= beta:
-                                        return m
-                                    if m > alpha:
-                                        alpha = m
-                
-                
-                else: # Noeud min
-                    m = sys.maxsize
+                                if score != None:
+                                    if score > m:
+                                        m = score
+                                    alpha = max(alpha, score)
+                                    if alpha >= beta:
+                                        break
+                return m
+        
+            else: # Noeud min
+                m = float('inf')      
+                for depth in range(1, p + 1):           
                     for lgn in range(self.n):
                         for cln in range(self.m):
                             if self.grid[lgn][cln] == 0:
                                 self.grid[lgn][cln] = 3 - joueur
-                                v = self.min_max_IterativDeepening(depth, alpha, beta, joueur)
+                                score = self.min_max_IterativDeepening(depth - 1, alpha, beta, joueur)
                                 self.grid[lgn][cln] = 0
-                                if v > m:
-                                    m = v
-                                    if m <= alpha:
-                                        return m
-                                    if m < alpha:
-                                        beta = m
-            return m
+                                if score != None:
+                                    if score < m:
+                                        m = score
+                                    beta = min(beta, score)
+                                    if alpha >= beta:
+                                        break
+
+                return m
 
 
 
             
+    def random_ai(self): # trolling, c'est nul évidemment (mais avec de la chance ...)
+        row = random.randrange(self.n)
+        col = random.randrange(self.m)
 
+        while not(self.is_valid_move(row, col)):
+            row = random.randrange(self.n)
+            col = random.randrange(self.m)
+
+        return row, col
+            
         

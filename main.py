@@ -12,8 +12,8 @@ if __name__ == '__main__':
     #nb_player = int(sys.argv[3]) # pour le moment, uniquement deux joueurs
     #k = int(sys.argv[4])
 
-    n,m = int(input("Choisir n")), int(input("Choisir m"))
-    k = int(input("Choisir le nombre de case à aligner pour gagner k :"))
+    n,m = int(input("Choisir n (par défaut : 3)") or '3'), int(input("Choisir m (par défaut : 3)") or '3')
+    k = int(input("Choisir le nombre de case à aligner pour gagner k : (par défaut : 3)") or '3')
     nb_player = int(2)
     
     jeu = ttt.TTT(n, m, nb_player, k)

@@ -98,7 +98,7 @@ def jouer_partie_IA(jeu : ttt.TTT):
     print(jeu)  # Affichage de la grille de jeu initiale
 
     joueur = 1 # int(input("Choisir : l'humain commence (1) | l'IA commence (2)"))
-    
+
 
     while (joueur != 0 and not(jeu.gagnant(1)) and not(jeu.gagnant(2))):
         if joueur == 1:
@@ -111,26 +111,29 @@ def jouer_partie_IA(jeu : ttt.TTT):
             except (ValueError, IndexError, exception.InvalidMoveError):
                 print("Coup invalide. Veuillez réessayer.")
                 continue
-        else:
+        else: # dans cette version, l'IA est toujours le joueur max, i.e elle commence jamais
             start = time.time()
             print("\nTour de l'IA.")
-            meilleur_coup = None
+            meilleur_coup = jeu.random_ai()
             meilleur_valeur = -sys.maxsize
             for lgn in range(jeu.n):
                 for cln in range(jeu.m):
                     if jeu.grid[lgn][cln] == 0:
                         jeu.grid[lgn][cln] = 2
-                        valeur = jeu.min_max_align(3, -sys.maxsize, sys.maxsize, 2)  # Profondeur à adapter ici 3
+                        valeur = jeu.min_max_IterativDeepening(4, -sys.maxsize, sys.maxsize, joueur)  # Profondeur à adapter ici 3
                         jeu.grid[lgn][cln] = 0
 
 
                         if valeur > meilleur_valeur:
                             meilleur_valeur = valeur
                             meilleur_coup = (lgn, cln)
-
-            # if meilleur_coup:
-            jeu.play_move(meilleur_coup[0], meilleur_coup[1])
-            print("durée du coup : " + str(time.time() - start))
+            if valeur == 0:
+                a, b = jeu.random_ai()
+                jeu.play_move(a, b)
+                print("durée du coup : " + str(time.time() - start))
+            else:
+                jeu.play_move(meilleur_coup[0], meilleur_coup[1])
+                print("durée du coup : " + str(time.time() - start))
                 
         joueur = jeu.next_player() # Passage au joueur suivant
         print(jeu)  # Affichage de la grille après le coup
