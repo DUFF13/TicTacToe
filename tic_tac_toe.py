@@ -1,8 +1,8 @@
-import sys
 import numpy as np
 import exception
 import time
 import random
+import interface
 
 class TTT():
 
@@ -155,6 +155,11 @@ class TTT():
                         return True
         return False # O(4*n*m*k) = O(n*m*k)
 
+    def get_winner(self):
+        for i in range(self.nb_player + 1):
+            if self.gagnant(i):
+                return i
+        return 0
 
     def longueur_alignement(self, i : tuple, di : tuple, joueur : int) -> int:
         ''' méthode pour connaître la longueur d'un alignement, utile pour coder minimax par la suite pour connaitre quel joueur est favori'''
