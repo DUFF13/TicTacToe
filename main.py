@@ -31,8 +31,11 @@ if __name__ == '__main__':
         k = int(input("Choose k (by default : 3)") or '3')
         jeu = ttt.TTT(n, m, 2, k)
 
-        AI = int(input('Which AI do you want to try ? : (1 for Minimax, 2 for Minimax with iterativ deepening)'))
-        jouer.jouer_partie_IA(jeu, AI)
+        AI = int(input('Which AI do you want to try ? : (1 for Minimax, 2 for Minimax with iterativ deepening, 3 for MonteCarlo)'))
+        if AI == 3:
+            jouer.jouer_partie_monte_carlo(jeu)
+        else:
+            jouer.jouer_partie_IA(jeu, AI)
 
 
     elif choose_game == 3:

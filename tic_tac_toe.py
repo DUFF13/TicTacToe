@@ -426,8 +426,8 @@ class TTT():
         
 
 
-    def MonteCarlo(self): # marche pas pour le moment
-        nombre_simulations = 5
+    def MonteCarloaa(self, joueur): # marche pas pour le moment
+        nombre_simulations = 500
         mouvement_valides = [(i, j) for i in range(self.n) for j in range(self.m) if self.is_valid_move(i, j)] # teste tous les mouvements valides de la grille
 
         scores = []
@@ -435,22 +435,60 @@ class TTT():
             score = 0
             a, b = move
 
+
             for _ in range(nombre_simulations):
                 simulation = self.copy()
                 simulation.play_move(a, b)
 
-            
-                while(self.nb_coup != (self.n * self.m)  and not(self.gagnant(1)) and not(self.gagnant(2))):
-                    
+                while(simulation.nb_coup < self.n * self.m  and not(self.gagnant(joueur)) and not(self.gagnant(3 - joueur))):
                     random1, random2 = simulation.random_ai()
                     simulation.play_move(random1, random2)
 
-                if simulation.gagnant(1):
-                    score += 10
+                if simulation.gagnant(joueur) or simulation.gagnant(3 - joueur):
+                    score += 2
                 else:
-                    score += 5
+                    score += 1
+
                 
             scores.append((score, random1, random2))
 
-        return max(scores, key = lambda x : x[0])
+        s, i, j = max(scores, key = lambda x : x[0])
+        return s, i, j
                 
+
+    def MonteCarlo(self):
+        # Number of simulations to run for each valid move
+        num_simulations = 1000
+
+        # Get all valid moves
+        valid_moves = [(i, j) for i in range(self.m) for j in range(self.n) if self.is_valid_move(i, j)]
+
+        # Run simulations for each valid move and keep track of scores
+        scores = []
+        for move in valid_moves:
+            score = 0
+            for _ in range(num_simulations):
+                # Copy the game and make the move
+                simulation_game = self.copy()
+                simulation_game.play_move(*move)
+
+                # Run a random simulation from the new state
+                while not (simulation_game.gagnant(1) or simulation_game.gagnant(2) or simulation_game.nb_coup == self.n * self.m):
+                    # Get all valid moves for the simulation game
+                    valid_moves_simulation = [(i, j) for i in range(simulation_game.m) for j in range(simulation_game.n) if simulation_game.is_valid_move(i, j)]
+                    # Choose a random move and make it
+                    random_move = random.choice(valid_moves_simulation)
+                    simulation_game.play_move(*random_move)
+
+                # Check the result of the simulation
+                if simulation_game.gagnant(1):
+                    score += 1
+                elif not(simulation_game.gagnant(2)):
+                    score += 0.5
+
+            scores.append(score)
+
+        # Choose the move with the highest average score
+        best_move = valid_moves[scores.index(max(scores))]
+
+        return best_move
