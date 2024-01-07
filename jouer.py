@@ -258,3 +258,66 @@ def jouer_partie_monte_carlo(jeu : ttt.TTT):
         print("\nL'IA a gagné !")
     else:
         print("\nMatch nul !")
+
+
+def jouer_partie_IA_3joueurs(jeu : ttt.TTT, heuristic):
+    ''' jouer une partie contre l'IA en 1v1'''
+    print("Vous jouez contre l'IA. Voici la grille de jeu :\n")
+    print(jeu)  # Affichage de la grille de jeu initiale
+
+    joueur = 1 #int(input("Choisir : l'humain commence (1) | l'IA commence (2)"))
+
+    while (joueur != 0 and not(jeu.gagnant(1)) and not(jeu.gagnant(2)) and not(jeu.gagnant(3))):
+        if joueur == 1:
+            print("\nTour du joueur humain 1.")
+            try:
+                lgn = int(input("Entrez le numéro de ligne (0 à {}): ".format(jeu.n - 1)))
+                cln = int(input("Entrez le numéro de colonne (0 à {}): ".format(jeu.m - 1)))
+                jeu.play_move(lgn, cln)
+                
+            except (ValueError, IndexError, exception.InvalidMoveError):
+                print("Coup invalide. Veuillez réessayer.")
+                continue
+        elif joueur == 2:
+            print("\nTour du joueur humain 1.")
+            try:
+                lgn = int(input("Entrez le numéro de ligne (0 à {}): ".format(jeu.n - 1)))
+                cln = int(input("Entrez le numéro de colonne (0 à {}): ".format(jeu.m - 1)))
+                jeu.play_move(lgn, cln)
+                
+            except (ValueError, IndexError, exception.InvalidMoveError):
+                print("Coup invalide. Veuillez réessayer.")
+                continue
+        else: # dans cette version, l'IA est toujours le joueur max, i.e elle commence jamais
+            start = time.time()
+            print("\nTour de l'IA.")
+            meilleur_coup = jeu.random_ai()
+            meilleur_valeur = float('-inf')
+            for lgn in range(jeu.n):
+                for cln in range(jeu.m):
+                    if jeu.grid[lgn][cln] == 0:
+                        jeu.grid[lgn][cln] = 2
+                        if heuristic == 1:
+                            valeur = jeu.min_max_align(3, float('-inf'), float('inf'), joueur)  # Profondeur à adapter ici 3
+                        elif heuristic == 2:
+                            valeur = jeu.min_max_IterativDeepening(3, float('-inf'), float('inf'), joueur)  # Profondeur à adapter ici 3
+                        jeu.grid[lgn][cln] = 0
+
+
+                        if valeur > meilleur_valeur:
+                            meilleur_valeur = valeur
+                            meilleur_coup = (lgn, cln)
+
+            jeu.play_move(meilleur_coup[0], meilleur_coup[1])
+            print("durée du coup : " + str(time.time() - start))
+                
+        joueur = jeu.next_player() # Passage au joueur suivant
+        print(jeu)  # Affichage de la grille après le coup
+        
+
+    if jeu.gagnant(1):
+        print("\nLe joueur humain a gagné !")
+    elif jeu.gagnant(2):
+        print("\nL'IA a gagné !")
+    else:
+        print("\nMatch nul !")
