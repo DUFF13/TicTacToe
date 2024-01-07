@@ -97,7 +97,7 @@ def jouer_partie_IA(jeu : ttt.TTT, heuristic):
     print("Vous jouez contre l'IA. Voici la grille de jeu :\n")
     print(jeu)  # Affichage de la grille de jeu initiale
 
-    joueur = int(input("Choisir : l'humain commence (1) | l'IA commence (2)"))
+    joueur = 1 #int(input("Choisir : l'humain commence (1) | l'IA commence (2)"))
 
     while (joueur != 0 and not(jeu.gagnant(1)) and not(jeu.gagnant(2))):
         if joueur == 1:
@@ -172,7 +172,7 @@ def jouer_IA_vs_IA(jeu : ttt.TTT):
                 for cln in range(jeu.m):
                     if jeu.grid[lgn][cln] == 0:
                         jeu.grid[lgn][cln] = joueur
-                        valeur = jeu.min_max_IterativDeepening(4, float('-inf'), float('inf'), joueur)  # Profondeur à adapter ici 3
+                        valeur = jeu.min_max_IterativDeepening(3, float('-inf'), float('inf'), joueur)  # Profondeur à adapter ici 3
                         jeu.grid[lgn][cln] = 0
 
                         if valeur >= meilleur_valeur:
@@ -194,7 +194,7 @@ def jouer_IA_vs_IA(jeu : ttt.TTT):
                 for cln in range(jeu.m):
                     if jeu.grid[lgn][cln] == 0:
                         jeu.grid[lgn][cln] = joueur
-                        valeur = jeu.min_max_align(4, float('-inf'), float('inf'), joueur)  # Profondeur à adapter ici 3
+                        valeur = jeu.min_max_align(3, float('-inf'), float('inf'), joueur)  # Profondeur à adapter ici 3
                         jeu.grid[lgn][cln] = 0
 
                         if valeur >= meilleur_valeur:
