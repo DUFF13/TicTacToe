@@ -389,6 +389,7 @@ class TTT():
                             if self.grid[lgn][cln] == 0:
                                 self.grid[lgn][cln] = joueur
                                 score = self.min_max_IterativDeepening(depth - 1, alpha, beta, joueur)
+                                print("max")
                                 self.grid[lgn][cln] = 0
                                 if score != None:
                                     if score > m:
@@ -404,6 +405,7 @@ class TTT():
                             if self.grid[lgn][cln] == 0:
                                 self.grid[lgn][cln] = 3 - joueur
                                 score = self.min_max_IterativDeepening(depth - 1, alpha, beta, joueur)
+                                print("min")
                                 self.grid[lgn][cln] = 0
                                 if score != None:
                                     if score < m:
@@ -450,8 +452,8 @@ class TTT():
 
                 if simulation_game.gagnant(1):
                     score += 10
-                elif not(simulation_game.gagnant(2)):
-                    score += 5
+                    if (simulation_game.gagnant(2)):
+                        score += 5
 
             scores.append(score)
 

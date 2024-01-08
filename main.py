@@ -11,7 +11,6 @@ choose = """
 """
 
 
-
 if __name__ == '__main__':
     print('Welcome to our MNK game')
 
@@ -25,6 +24,7 @@ if __name__ == '__main__':
         jeu = ttt.TTT(n, m, nb_player, k)
 
         jouer.jouer_partie(jeu)
+
 
     elif choose_game == 2:
         n, m = int(input("choose m the number of rows (by default : 3)") or '3'), int(input("Choose n the number of columns (by default : 3)") or '3') # j'ai inversé car le jeu s'appelle mnk et non nmk ...
