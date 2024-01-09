@@ -68,11 +68,4 @@ if __name__ == '__main__':
 #        algorithme probabiliste -> monte carlo (termine mais pas forcément correct) et peut-être las vegas si je trouve des idées (l'inverse), vraiment pas top
 
 #       Pour l'IA : 
-        Si 3 joueurs : 1 IA vs 2 humains (min min max), deux joueurs qui s'allient pour nous faire perdre, comme deux coups à la place d'un coup
-                  --> Tester avec différentes grilles (5x5 max) fait
-                  --> Tester grille rectangle (mais pour les stats utiliser une grille carrée)
-
-#       Pour Interface graphique :
-          - joueur avec la souris : cliquer sur case etc... (objectif final)'''
-
-
+'''

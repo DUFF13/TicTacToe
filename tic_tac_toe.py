@@ -178,7 +178,8 @@ class TTT():
 
 
     def cases_vides (self, i : tuple) -> int:
-        '''renvoie les voisins de la case donnée en entrée sous forme d'une liste''' # c'est faux, ça ne renvoie pas ça 
+        '''renvoie le nb de cases libres autour de la case i''' 
+
         lgn, cln = i
         tab_direction = [(0,1), (0,-1), (1,0), (-1,0), (1,1), (1,-1), (-1,1), (-1,-1)]
         free_box = 0
@@ -212,7 +213,7 @@ class TTT():
         for i in range(self.n):
             for j in range(self.m):
                 if self.grid[i][j] == joueur:
-                    if self.coup_gagnant((i, j), joueur) : # Si le coup est gagnant on oublie la défence et on joue
+                    if self.coup_gagnant((i, j), joueur) : # Si le coup est gagnant on oublie la défense et on joue
                         return float('inf')
                     else :
                         w_max_joueur += self.cases_vides((i, j)) 
@@ -253,6 +254,9 @@ class TTT():
 
             return compteur >= self.k
 
+        if self.gagnant(3 - joueur):
+            return float('-inf')
+
         for i in range(self.n):
             for j in range(self.m):
                 if self.grid[i][j] == joueur:
@@ -261,7 +265,7 @@ class TTT():
                             l = self.longueur_alignement((i, j), tab_direction[a], joueur)
                             if (l == self.k):
                                 return float('inf') # si le joueur est gagnant on renvoie MAX_INT (pas trop équivalent du C mais ça fait l'affaire)
-                            if (l > algn_max_joueur): # demander à Aubry
+                            if (l > algn_max_joueur): 
                                 algn_max_joueur = l
 
                 elif (self.grid[i][j] == adversaire):
@@ -269,9 +273,10 @@ class TTT():
                         if alignement_possible((i, j),tab_direction[a], adversaire):
                             l = self.longueur_alignement((i, j), tab_direction[a], adversaire)
                             if (l == self.k):
-                                return float('-inf') # à modifier
+                                return float('-inf') 
                             if (l > algn_max_adversaire):
                                 algn_max_adversaire = l
+
 
         score_joueur = self.k * (algn_max_joueur - algn_max_adversaire) * algn_max_joueur
         score_adversaire = self.k * (algn_max_adversaire - algn_max_joueur) * algn_max_adversaire
@@ -389,7 +394,6 @@ class TTT():
                             if self.grid[lgn][cln] == 0:
                                 self.grid[lgn][cln] = joueur
                                 score = self.min_max_IterativDeepening(depth - 1, alpha, beta, joueur)
-                                print("max")
                                 self.grid[lgn][cln] = 0
                                 if score != None:
                                     if score > m:
@@ -405,7 +409,6 @@ class TTT():
                             if self.grid[lgn][cln] == 0:
                                 self.grid[lgn][cln] = 3 - joueur
                                 score = self.min_max_IterativDeepening(depth - 1, alpha, beta, joueur)
-                                print("min")
                                 self.grid[lgn][cln] = 0
                                 if score != None:
                                     if score < m:
