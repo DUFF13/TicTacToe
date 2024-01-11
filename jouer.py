@@ -342,7 +342,7 @@ def jouer_partie_IA(jeu : ttt.TTT, heuristic):
             start = time.time()
             print("\nTour de l'IA.")
             if heuristic == 1:
-                    _, meilleur_coup = jeu.min_max_align(3, float('inf'), float('-inf'), joueur)
+                    _, meilleur_coup = jeu.min_max_align(3, float('-inf'), float('inf'), joueur)
             elif heuristic == 2:
                 _, meilleur_coup = jeu.min_max_IterativDeepening(3, float('-inf'), float('inf'), joueur)
             elif heuristic == 4:
@@ -364,7 +364,7 @@ def jouer_partie_IA(jeu : ttt.TTT, heuristic):
 
 
 
-def jouer_IA_vs_IA_test(jeu : ttt.TTT,heuristic1, heuristic2):
+def jouer_IA_vs_IA_test(jeu : ttt.TTT, heuristic1, heuristic2):
     ''' faire jouer 2 IA l'une contre l'autre'''
     print(" H_vide (J1) VS H_align (J2). Voici la grille de jeu :\n")
     print(jeu)  
@@ -386,7 +386,7 @@ def jouer_IA_vs_IA_test(jeu : ttt.TTT,heuristic1, heuristic2):
             meilleur_coup = None
             print("\nTour du joueur 1.")
             if heuristic1 == 1:
-                    _, meilleur_coup = jeu.min_max_align(4, float('inf'), float('-inf'), joueur)
+                    _, meilleur_coup = jeu.min_max_align(4, float('-inf'), float('inf'), joueur)
             elif heuristic1 == 2:
                 _, meilleur_coup = jeu.min_max_IterativDeepening(4, float('-inf'), float('inf'), joueur)
             elif heuristic1 == 4:
@@ -407,11 +407,11 @@ def jouer_IA_vs_IA_test(jeu : ttt.TTT,heuristic1, heuristic2):
             meilleur_coup = None
             print("\nTour du joueur 2.")
             if heuristic2 == 1:
-                    _, meilleur_coup = jeu.min_max_align(4, float('inf'), float('-inf'), 3 - joueur)
+                    _, meilleur_coup = jeu.min_max_align(4, float('-inf'), float('inf'),  joueur)
             elif heuristic2 == 2:
-                _, meilleur_coup = jeu.min_max_IterativDeepening(4, float('-inf'), float('inf'), 3 - joueur)
+                _, meilleur_coup = jeu.min_max_IterativDeepening(4, float('-inf'), float('inf'), joueur)
             elif heuristic2 == 4:
-                _, meilleur_coup = jeu.min_max_vide(3, float('-inf'), float('inf'), 3 - joueur) 
+                _, meilleur_coup = jeu.min_max_vide(3, float('-inf'), float('inf'), joueur) 
 
             if meilleur_coup is None:
                 print("none")
