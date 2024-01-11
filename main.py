@@ -32,7 +32,7 @@ if __name__ == '__main__':
         nb_player = (int(input("2 or 3 players (by default 2)" or '2')))
         jeu = ttt.TTT(n, m, nb_player, k)
 
-        AI = int(input('Which AI do you want to try ? : (1 for Minimax, 2 for Minimax with iterativ deepening, 3 for MonteCarlo)'))
+        AI = int(input('Which AI do you want to try ? : (1 for Minimax with align heuristic, 2 for Minimax with iterativ deepening, 3 for MonteCarlo or 4 for minimax with empty_heuristic)'))
         if AI == 3:
             jouer.jouer_partie_monte_carlo(jeu)
         else:
@@ -47,7 +47,9 @@ if __name__ == '__main__':
         k = int(input("Choose k (by default : 3)") or '3')
         jeu = ttt.TTT(n, m, 2, k)
         print("For the moment only minimax with iterativ deepening against minimax")
-        jouer.jouer_IA_vs_IA(jeu)
+        choose_h = "choose the heurisitc 1 and 2 : 1 for minimax with align heurisitc, 2 for minimax with iterativ deepening, 3 for MonteCarlo or 4 for empty_heuristic"
+        h1, h2 = int(input(choose_h)), int(input(choose_h))
+        jouer.jouer_IA_vs_IA_test(jeu, h1, h2)
 
 
 

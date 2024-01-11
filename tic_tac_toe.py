@@ -4,6 +4,9 @@ import time
 import random
 import interface
 
+DureeMaximalDeRecherche = 2
+
+
 class TTT():
 
     ''' Class pour le jeu ou n et m sont les dimensions du jeu et k le nombre de symbole à aligner pour gagner'''
@@ -254,9 +257,6 @@ class TTT():
 
             return compteur >= self.k
 
-        if self.gagnant(3 - joueur):
-            return float('-inf')
-
         for i in range(self.n):
             for j in range(self.m):
                 if self.grid[i][j] == joueur:
@@ -290,47 +290,47 @@ class TTT():
 
 
 
-    def min_max_align(self, p : int, alpha : int, beta : int, joueur : int) -> int:
-            ''' algorithme minimax '''
+    # def min_max_align(self, p : int, alpha : int, beta : int, joueur : int) -> int:
+    #         ''' algorithme minimax '''
 
-            j = self.next_player()
+    #         j = self.next_player()
             
-            if (self.gagnant(3 - joueur) or self.gagnant(joueur) or j == 0 or p == 0):
-                return self.heuristique_align(joueur)
+    #         if (self.gagnant(3 - joueur) or self.gagnant(joueur) or j == 0 or p == 0):
+    #             return self.heuristique_align(joueur)
 
-            if j == joueur: # noeud max
-                m = float('-inf')
-                for lgn in range(self.n):
-                    for cln in range(self.m):
-                        if self.grid[lgn][cln] == 0:                                
-                            self.grid[lgn][cln] = joueur                            
-                            score = self.min_max_align(p-1, alpha, beta, joueur)
-                            self.grid[lgn][cln] = 0
-                            if score != None:
-                                if score > m:                            
-                                    m = score
-                                alpha = max(alpha, score)
-                                if alpha >= beta:
-                                    break
+    #         if j == joueur: # noeud max
+    #             m = float('-inf')
+    #             for lgn in range(self.n):
+    #                 for cln in range(self.m):
+    #                     if self.grid[lgn][cln] == 0:                                
+    #                         self.grid[lgn][cln] = joueur                            
+    #                         score = self.min_max_align(p-1, alpha, beta, joueur)
+    #                         self.grid[lgn][cln] = 0
+    #                         if score != None:
+    #                             if score > m:                            
+    #                                 m = score
+    #                             alpha = max(alpha, score)
+    #                             if alpha >= beta:
+    #                                 break
 
-                return m
+    #             return m
 
-            else: # noeud min
-                m = float('inf') 
-                for lgn in range(self.n):
-                    for cln in range(self.m):
-                        if self.grid[lgn][cln] == 0:                                
-                            self.grid[lgn][cln] = 3 - joueur                            
-                            score = self.min_max_align(p - 1, alpha, beta, joueur)
-                            self.grid[lgn][cln] = 0
-                            if score != None:
-                                if score < m:
-                                    m = score
-                                beta = min(beta, score)
-                                if alpha >= beta:
-                                    break
+    #         else: # noeud min
+    #             m = float('inf') 
+    #             for lgn in range(self.n):
+    #                 for cln in range(self.m):
+    #                     if self.grid[lgn][cln] == 0:                                
+    #                         self.grid[lgn][cln] = 3 - joueur                            
+    #                         score = self.min_max_align(p - 1, alpha, beta, joueur)
+    #                         self.grid[lgn][cln] = 0
+    #                         if score != None:
+    #                             if score < m:
+    #                                 m = score
+    #                             beta = min(beta, score)
+    #                             if alpha >= beta:
+    #                                 break
                                 
-                return m
+    #             return m
 
 
 
@@ -338,9 +338,10 @@ class TTT():
             ''' algorithme minimax '''
 
             j = self.next_player()
+            best_move = None
             
             if (self.gagnant(joueur) or self.gagnant(3 - joueur) or j == 0 or p == 0):
-                return self.heuristique_vide(joueur)
+                return self.heuristique_vide(joueur), best_move
             
             if j == joueur: # Noeud Max
                 m = float('-inf')
@@ -348,14 +349,14 @@ class TTT():
                     for cln in range(self.m):
                         if self.grid[lgn][cln] == 0:
                             self.grid[lgn][cln] = joueur
-                            score = self.min_max_vide(p - 1, alpha, beta, joueur)
+                            score, _ = self.min_max_vide(p - 1, alpha, beta, joueur)
                             self.grid[lgn][cln] = 0
                             if score > m:
                                 m = score
+                                best_move = (lgn, cln)
                             alpha = max(alpha, score)
                             if alpha >= beta:
                                 break
-                return m
             
             else: # Noeud min
                 m = float('inf')      
@@ -363,61 +364,62 @@ class TTT():
                     for cln in range(self.m):
                         if self.grid[lgn][cln] == 0:
                             self.grid[lgn][cln] = 3 - joueur
-                            score = self.min_max_vide(p - 1, alpha, beta, joueur)
+                            score, _ = self.min_max_vide(p - 1, alpha, beta, joueur)
                             self.grid[lgn][cln] = 0
                             if score < m:
                                 m = score
+                                best_move = (lgn, cln)
                             beta = min(beta, score)
                             if alpha >= beta:
                                 break
-                return m
+            return m, best_move
 
 
-    def min_max_IterativDeepening(self, p : int, alpha : int, beta : int, joueur : int) -> int:
-            ''' algorithme minimax avec iterativ deepening search'''
-            # start = time.time() # utilise si l'on souhaite rajouter une fonctionnalité de durée maximal de recherche
+    # def min_max_IterativDeepening(self, p : int, alpha : int, beta : int, joueur : int) -> int:
+    #         ''' algorithme minimax avec iterativ deepening search'''
+    #         # start = time.time() # utilise si l'on souhaite rajouter une fonctionnalité de durée maximal de recherche
             
-            j = self.next_player()
+    #         j = self.next_player()
 
 
 
-            if (self.gagnant(joueur) or self.gagnant(3 - joueur) or j == 0 or p == 0):
-                return self.heuristique_align(joueur)
+    #         if (self.gagnant(joueur) or self.gagnant(3 - joueur) or j == 0 or p == 0):
+    #             return self.heuristique_align(joueur)
             
 
-            for depth in range(1, p + 1):
+    #         for depth in range(1, p + 1):
 
-                if j == joueur: # Noeud Max                   
-                    m = float('-inf')
-                    for lgn in range(self.n):
-                        for cln in range(self.m):
-                            if self.grid[lgn][cln] == 0:
-                                self.grid[lgn][cln] = joueur
-                                score = self.min_max_IterativDeepening(depth - 1, alpha, beta, joueur)
-                                self.grid[lgn][cln] = 0
-                                if score != None:
-                                    if score > m:
-                                        m = score
-                                    alpha = max(alpha, score)
-                                    if alpha >= beta:
-                                        break
+    #             if j == joueur: # Noeud Max                   
+    #                 m = float('-inf')
+    #                 for lgn in range(self.n):
+    #                     for cln in range(self.m):
+    #                         if self.grid[lgn][cln] == 0:
+    #                             self.grid[lgn][cln] = joueur
+    #                             score = self.min_max_IterativDeepening(depth - 1, alpha, beta, joueur)
+    #                             self.grid[lgn][cln] = 0
+    #                             if score != None:
+    #                                 if score > m:
+    #                                     m = score
+    #                                 alpha = max(alpha, score)
+    #                                 if alpha >= beta:
+    #                                     break
         
-                else: # Noeud min
-                    m = float('inf')                 
-                    for lgn in range(self.n):
-                        for cln in range(self.m):
-                            if self.grid[lgn][cln] == 0:
-                                self.grid[lgn][cln] = 3 - joueur
-                                score = self.min_max_IterativDeepening(depth - 1, alpha, beta, joueur)
-                                self.grid[lgn][cln] = 0
-                                if score != None:
-                                    if score < m:
-                                        m = score
-                                    beta = min(beta, score)
-                                    if alpha >= beta:
-                                        break
+    #             else: # Noeud min
+    #                 m = float('inf')                 
+    #                 for lgn in range(self.n):
+    #                     for cln in range(self.m):
+    #                         if self.grid[lgn][cln] == 0:
+    #                             self.grid[lgn][cln] = 3 - joueur
+    #                             score = self.min_max_IterativDeepening(depth - 1, alpha, beta, joueur)
+    #                             self.grid[lgn][cln] = 0
+    #                             if score != None:
+    #                                 if score < m:
+    #                                     m = score
+    #                                 beta = min(beta, score)
+    #                                 if alpha >= beta:
+    #                                     break
 
-            return m
+    #         return m
 
 
 
@@ -463,3 +465,101 @@ class TTT():
         best_move = valid_moves[scores.index(max(scores))]
 
         return best_move
+    
+
+
+    def min_max_IterativDeepening(self, p : int, alpha : int, beta : int, joueur : int) -> int:
+            ''' algorithme minimax avec iterativ deepening search'''
+            # start = time.time() # utilise si l'on souhaite rajouter une fonctionnalité de durée maximal de recherche
+            
+            j = self.next_player()
+            best_move = None
+            start = time.time()
+
+
+
+            if (self.gagnant(joueur) or self.gagnant(3 - joueur) or j == 0 or p == 0 ):
+                return self.heuristique_align(joueur), best_move
+            
+
+            for depth in range(1, p + 1):
+                if time.time() - start > DureeMaximalDeRecherche:
+                    break
+                if j == joueur: # Noeud Max                   
+                    m = float('-inf')
+                    for lgn in range(self.n):
+                        for cln in range(self.m):
+                            if self.grid[lgn][cln] == 0:
+                                self.grid[lgn][cln] = joueur
+                                score, _ = self.min_max_IterativDeepening(depth - 1, alpha, beta, joueur)
+                                self.grid[lgn][cln] = 0
+                                if score != None:
+                                    if score >= m:
+                                        m = score
+                                        best_move = (lgn, cln)
+                                    alpha = max(alpha, score)
+                                    if alpha >= beta:
+                                        break
+        
+                else: # Noeud min
+                    m = float('inf')           
+                    for lgn in range(self.n):
+                        for cln in range(self.m):
+                            if self.grid[lgn][cln] == 0:
+                                self.grid[lgn][cln] = 3 - joueur
+                                score, _ = self.min_max_IterativDeepening(depth - 1, alpha, beta, joueur)
+                                self.grid[lgn][cln] = 0
+                                if score != None:
+                                    if score <= m:
+                                        m = score
+                                        best_move = (lgn, cln)
+                                    beta = min(beta, score)
+                                    if alpha >= beta:
+                                        break
+
+            return m, best_move
+
+
+
+    def min_max_align(self, p : int, alpha : int, beta : int, joueur : int) -> int:
+            ''' algorithme minimax '''
+
+            j = self.next_player()
+            best_move = None
+            
+            if (self.gagnant(3 - joueur) or self.gagnant(joueur) or j == 0 or p == 0):
+                return self.heuristique_align(joueur), best_move
+
+            if j == joueur: # noeud max
+                m = float('-inf')
+                for lgn in range(self.n):
+                    for cln in range(self.m):
+                        if self.grid[lgn][cln] == 0:                                
+                            self.grid[lgn][cln] = joueur                            
+                            score, _ = self.min_max_align(p-1, alpha, beta, joueur)
+                            self.grid[lgn][cln] = 0
+                            if score != None:
+                                if score > m:                            
+                                    m = score
+                                    best_move = (lgn, cln)
+                                alpha = max(alpha, score)
+                                if alpha >= beta:
+                                    break
+
+            else: # noeud min
+                m = float('inf') 
+                for lgn in range(self.n):
+                    for cln in range(self.m):
+                        if self.grid[lgn][cln] == 0:                                
+                            self.grid[lgn][cln] = 3 - joueur                            
+                            score, _ = self.min_max_align(p - 1, alpha, beta, joueur)
+                            self.grid[lgn][cln] = 0
+                            if score != None:
+                                if score < m:
+                                    m = score
+                                    best_move = (lgn, cln)
+                                beta = min(beta, score)
+                                if alpha >= beta:
+                                    break
+                                
+            return m, best_move
