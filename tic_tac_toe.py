@@ -353,6 +353,9 @@ class TTT():
                             self.grid[lgn][cln] = joueur
                             score, _ = self.min_max_vide(p - 1, alpha, beta, joueur)
                             self.grid[lgn][cln] = 0
+                            if score == m:
+                                if random.randint(0, 1) == 1:
+                                    best_move = (lgn, cln)
                             if score > m:
                                 m = score
                                 best_move = (lgn, cln)
@@ -368,6 +371,9 @@ class TTT():
                             self.grid[lgn][cln] = 3 - joueur
                             score, _ = self.min_max_vide(p - 1, alpha, beta, joueur)
                             self.grid[lgn][cln] = 0
+                            if score == m:
+                                if random.randint(0, 1) == 1:
+                                    best_move = (lgn, cln)
                             if score < m:
                                 m = score
                                 best_move = (lgn, cln)
@@ -450,6 +456,9 @@ class TTT():
                                 score, _ = self.min_max_IterativDeepening(depth - 1, alpha, beta, joueur)
                                 self.grid[lgn][cln] = 0
                                 if score != None:
+                                    if score == m:
+                                        if random.randint(0, 1) == 1:
+                                            best_move = (lgn, cln)
                                     if score >= m:
                                         m = score
                                         best_move = (lgn, cln)
@@ -466,6 +475,9 @@ class TTT():
                                 score, _ = self.min_max_IterativDeepening(depth - 1, alpha, beta, joueur)
                                 self.grid[lgn][cln] = 0
                                 if score != None:
+                                    if score == m:
+                                        if random.randint(0, 1) == 1:
+                                            best_move = (lgn, cln)
                                     if score <= m:
                                         m = score
                                         best_move = (lgn, cln)
@@ -495,6 +507,9 @@ class TTT():
                             score, _ = self.min_max_align(p-1, alpha, beta, joueur)
                             self.grid[lgn][cln] = 0
                             if score != None:
+                                if score == m:
+                                    if random.randint(0, 1) == 1: # si deux pos ont le même poids, on choisi au hasard l'une des deux
+                                        best_move = (lgn, cln)
                                 if score > m:                            
                                     m = score
                                     best_move = (lgn, cln)
@@ -511,6 +526,9 @@ class TTT():
                             score, _ = self.min_max_align(p - 1, alpha, beta, joueur)
                             self.grid[lgn][cln] = 0
                             if score != None:
+                                if score == m:
+                                    if random.randint(0, 1) == 1:
+                                        best_move = (lgn, cln)
                                 if score < m:
                                     m = score
                                     best_move = (lgn, cln)
