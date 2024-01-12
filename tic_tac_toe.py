@@ -256,9 +256,6 @@ class TTT():
                 i, j = i - direction[0], j - direction[1]
 
             return compteur >= self.k
-        
-        if self.gagnant(adversaire):
-            return float('inf')
 
         for i in range(self.n):
             for j in range(self.m):
