@@ -195,7 +195,8 @@ class TTT():
         return free_box
 
 
-    def coup_gagnant(self, i : tuple, joueur) -> bool : # que fait cette fonction de plus que gagnant ?
+    def coup_gagnant(self, i : tuple, joueur) -> bool : 
+        ''' vérifie qu'un coup est gagnant '''
         x, y = i
         tab_direction = [(0,1), (0,-1), (1,0), (-1,0), (1,1), (1,-1), (-1,1), (-1,-1)]
         
@@ -232,7 +233,7 @@ class TTT():
 
 
     def heuristique_align(self, joueur) -> float: 
-        ''' heuristique pour min_max, à déterminer (naîve : compare les longueurs d'alignement max) '''
+        ''' heuristique pour min_max, à déterminer (assez naïve, elle compare les longueurs d'alignements possible) '''
         algn_max_joueur = 0
         algn_max_adversaire = 0
         adversaire = 3 - joueur # joueur = 1 ou 2 ...
@@ -240,6 +241,7 @@ class TTT():
 
 
         def alignement_possible(position, direction : tuple,  joueur : int) -> bool:
+            ''' Vérifie que l'alignement comprenant la case position dans une direction est possible '''
             compteur = 0
             i, j = position
             while (0 <= i and i < self.n and 0 <= j and j < self.m and (self.grid[i][j] == joueur or self.grid[i][j] == 0)):
@@ -335,7 +337,7 @@ class TTT():
 
 
     def min_max_vide(self, p : int, alpha : int, beta : int, joueur : int) -> int:
-            ''' algorithme minimax '''
+            ''' algorithme minimax avec l'heuristique vide '''
 
             j = self.next_player()
             best_move = None
@@ -375,56 +377,9 @@ class TTT():
             return m, best_move
 
 
-    # def min_max_IterativDeepening(self, p : int, alpha : int, beta : int, joueur : int) -> int:
-    #         ''' algorithme minimax avec iterativ deepening search'''
-    #         # start = time.time() # utilise si l'on souhaite rajouter une fonctionnalité de durée maximal de recherche
             
-    #         j = self.next_player()
-
-
-
-    #         if (self.gagnant(joueur) or self.gagnant(3 - joueur) or j == 0 or p == 0):
-    #             return self.heuristique_align(joueur)
-            
-
-    #         for depth in range(1, p + 1):
-
-    #             if j == joueur: # Noeud Max                   
-    #                 m = float('-inf')
-    #                 for lgn in range(self.n):
-    #                     for cln in range(self.m):
-    #                         if self.grid[lgn][cln] == 0:
-    #                             self.grid[lgn][cln] = joueur
-    #                             score = self.min_max_IterativDeepening(depth - 1, alpha, beta, joueur)
-    #                             self.grid[lgn][cln] = 0
-    #                             if score != None:
-    #                                 if score > m:
-    #                                     m = score
-    #                                 alpha = max(alpha, score)
-    #                                 if alpha >= beta:
-    #                                     break
-        
-    #             else: # Noeud min
-    #                 m = float('inf')                 
-    #                 for lgn in range(self.n):
-    #                     for cln in range(self.m):
-    #                         if self.grid[lgn][cln] == 0:
-    #                             self.grid[lgn][cln] = 3 - joueur
-    #                             score = self.min_max_IterativDeepening(depth - 1, alpha, beta, joueur)
-    #                             self.grid[lgn][cln] = 0
-    #                             if score != None:
-    #                                 if score < m:
-    #                                     m = score
-    #                                 beta = min(beta, score)
-    #                                 if alpha >= beta:
-    #                                     break
-
-    #         return m
-
-
-
-            
-    def random_ai(self): # trolling, c'est nul évidemment (mais avec de la chance ...)
+    def random_ai(self): 
+        ''' génére une position aléatoire possible '''
         row = random.randrange(self.n)
         col = random.randrange(self.m)
 
@@ -437,7 +392,8 @@ class TTT():
         
 
 
-    def MonteCarlo(self): # c'est vraiment pas top pour le moment, à voir si j'ai envie de l'améliorer 
+    def MonteCarlo(self): # c'est vraiment pas top pour le moment
+        ''' algorithme MCTS, mais soucis dans la fonction d'évalutation qui rend nul l'algo'''
         num_simulations = 1000
 
         valid_moves = [(i, j) for i in range(self.m) for j in range(self.n) if self.is_valid_move(i, j)]
