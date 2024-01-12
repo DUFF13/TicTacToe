@@ -370,6 +370,7 @@ def jouer_IA_vs_IA_test(jeu : ttt.TTT, heuristic1, heuristic2):
     print(jeu)  
     joueur = 1
     premier_coup = True
+    start_game = time.time()
     
     while (jeu.nb_coup != (jeu.n * jeu.m)  and not(jeu.gagnant(1)) and not(jeu.gagnant(2))):
         if premier_coup:
@@ -431,3 +432,4 @@ def jouer_IA_vs_IA_test(jeu : ttt.TTT, heuristic1, heuristic2):
         print("\nL'IA 2 a gagné !")
     else:
         print("\nMatch nul !")
+    print('la partie a duré : ' + str(time.time() - start_game))
