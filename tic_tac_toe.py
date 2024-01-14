@@ -2,7 +2,6 @@ import numpy as np
 import exception
 import time
 import random
-import interface
 
 DureeMaximalDeRecherche = 2
 
@@ -258,7 +257,7 @@ class TTT():
                 i, j = i - direction[0], j - direction[1]
 
             return compteur >= self.k
-
+        
         for i in range(self.n):
             for j in range(self.m):
                 if self.grid[i][j] == joueur:
@@ -275,9 +274,10 @@ class TTT():
                         if alignement_possible((i, j),tab_direction[a], adversaire):
                             l = self.longueur_alignement((i, j), tab_direction[a], adversaire)
                             if (l == self.k):
-                                return float('-inf') 
+                                return float('-inf') - 1
                             if (l > algn_max_adversaire):
                                 algn_max_adversaire = l
+                
 
 
         score_joueur = self.k * (algn_max_joueur - algn_max_adversaire) * algn_max_joueur
@@ -285,55 +285,6 @@ class TTT():
         return score_joueur - score_adversaire
 
         
-        
-
-        # return  (self.k * ((algn_max_joueur - algn_max_adversaire) * algn_max_joueur)) # plus c'est grand, plus le joueur a une position favorable
-        #  # on renvoie un résulat un peu quelconque qui juste plus grand si joueur est favorable
-
-
-
-    # def min_max_align(self, p : int, alpha : int, beta : int, joueur : int) -> int:
-    #         ''' algorithme minimax '''
-
-    #         j = self.next_player()
-            
-    #         if (self.gagnant(3 - joueur) or self.gagnant(joueur) or j == 0 or p == 0):
-    #             return self.heuristique_align(joueur)
-
-    #         if j == joueur: # noeud max
-    #             m = float('-inf')
-    #             for lgn in range(self.n):
-    #                 for cln in range(self.m):
-    #                     if self.grid[lgn][cln] == 0:                                
-    #                         self.grid[lgn][cln] = joueur                            
-    #                         score = self.min_max_align(p-1, alpha, beta, joueur)
-    #                         self.grid[lgn][cln] = 0
-    #                         if score != None:
-    #                             if score > m:                            
-    #                                 m = score
-    #                             alpha = max(alpha, score)
-    #                             if alpha >= beta:
-    #                                 break
-
-    #             return m
-
-    #         else: # noeud min
-    #             m = float('inf') 
-    #             for lgn in range(self.n):
-    #                 for cln in range(self.m):
-    #                     if self.grid[lgn][cln] == 0:                                
-    #                         self.grid[lgn][cln] = 3 - joueur                            
-    #                         score = self.min_max_align(p - 1, alpha, beta, joueur)
-    #                         self.grid[lgn][cln] = 0
-    #                         if score != None:
-    #                             if score < m:
-    #                                 m = score
-    #                             beta = min(beta, score)
-    #                             if alpha >= beta:
-    #                                 break
-                                
-    #             return m
-
 
 
     def min_max_vide(self, p : int, alpha : int, beta : int, joueur : int) -> int:
@@ -373,7 +324,7 @@ class TTT():
                             self.grid[lgn][cln] = 0
                             if score == m:
                                 if random.randint(0, 1) == 1:
-                                    best_move = (lgn, cln)
+                                    best_move = (lgn, cln   )
                             if score < m:
                                 m = score
                                 best_move = (lgn, cln)
@@ -436,7 +387,6 @@ class TTT():
             
             j = self.next_player()
             best_move = None
-            start = time.time()
 
 
 
@@ -445,8 +395,7 @@ class TTT():
             
 
             for depth in range(1, p + 1):
-                if time.time() - start > DureeMaximalDeRecherche:
-                    break
+
                 if j == joueur: # Noeud Max                   
                     m = float('-inf')
                     for lgn in range(self.n):
@@ -459,10 +408,10 @@ class TTT():
                                     if score == m:
                                         if random.randint(0, 1) == 1:
                                             best_move = (lgn, cln)
-                                    if score >= m:
+                                    if score > m:
                                         m = score
                                         best_move = (lgn, cln)
-                                    alpha = max(alpha, score)
+                                    alpha = max(alpha, m)
                                     if alpha >= beta:
                                         break
         
@@ -478,10 +427,10 @@ class TTT():
                                     if score == m:
                                         if random.randint(0, 1) == 1:
                                             best_move = (lgn, cln)
-                                    if score <= m:
+                                    if score < m:
                                         m = score
                                         best_move = (lgn, cln)
-                                    beta = min(beta, score)
+                                    beta = min(beta, m)
                                     if alpha >= beta:
                                         break
 
