@@ -209,15 +209,16 @@ def jouer_partie_IA(jeu : ttt.TTT, heuristic):
             except (ValueError, IndexError, exception.InvalidMoveError):
                 print("Coup invalide. Veuillez réessayer.")
                 continue
+
         else: # dans cette version, l'IA est toujours le joueur max, i.e elle commence jamais
             start = time.time()
             print("\nTour de l'IA.")
             if heuristic == 1:
-                    _, meilleur_coup = jeu.min_max_align(5, float('-inf'), float('inf'), joueur)
+                    _, meilleur_coup = jeu.min_max_align(4, float('-inf'), float('inf'), joueur)
             elif heuristic == 2:
                 _, meilleur_coup = jeu.min_max_IterativDeepening(5, float('-inf'), float('inf'), joueur)
             elif heuristic == 4:
-                _, meilleur_coup = jeu.min_max_vide(5, float('-inf'), float('inf'), joueur) 
+                _, meilleur_coup = jeu.min_max_vide(4, float('-inf'), float('inf'),joueur) 
       
             jeu.play_move(meilleur_coup[0], meilleur_coup[1])
             print("durée du coup : " + str(time.time() - start))
@@ -279,11 +280,11 @@ def jouer_IA_vs_IA(jeu : ttt.TTT, heuristic1, heuristic2):
             meilleur_coup = None
             print("\nTour du joueur 2.")
             if heuristic2 == 1:
-                    _, meilleur_coup = jeu.min_max_align(4, float('-inf'), float('inf'), joueur)
+                    _, meilleur_coup = jeu.min_max_align(4, float('-inf'), float('inf'),joueur)
             elif heuristic2 == 2:
-                _, meilleur_coup = jeu.min_max_IterativDeepening(5, float('-inf'), float('inf'), joueur)
+                _, meilleur_coup = jeu.min_max_IterativDeepening(5, float('-inf'), float('inf'),joueur)
             elif heuristic2 == 4:
-                _, meilleur_coup = jeu.min_max_vide(4, float('-inf'), float('inf'), joueur) 
+                _, meilleur_coup = jeu.min_max_vide(4, float('-inf'), float('inf'),joueur) 
 
             if meilleur_coup is None:
                 print("none")
