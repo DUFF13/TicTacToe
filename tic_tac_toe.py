@@ -2,7 +2,6 @@ import numpy as np
 import exception
 import time
 import random
-import math
 
 DureeMaximalDeRecherche = 5
 
@@ -158,6 +157,7 @@ class TTT():
         return False # O(4*n*m*k) = O(n*m*k)
 
     def get_winner(self):
+        ''' renvoie le numéro du vainqueur ou 0 si aucun gagnant'''
         for i in range(self.nb_player + 1):
             if self.gagnant(i):
                 return i
@@ -207,7 +207,7 @@ class TTT():
 
 
 
-    def heuristique_vide(self, joueur : int) -> int: # nul, perd même en commençant ...
+    def heuristique_vide(self, joueur : int) -> int: 
         ''' heuristique pour min_max, à déterminer (Continue : compare le nombre de cases libres autour de la case jouée)'''
         w_max_joueur = 0
         w_max_adversaire = 0
@@ -263,7 +263,7 @@ class TTT():
             for j in range(self.m):
                 if self.grid[i][j] == joueur:
                     for a in range(4):
-                        if alignement_possible((i, j),tab_direction[a], joueur):
+                        if alignement_possible((i, j),tab_direction[a], joueur): # si l'alignement n'est pas possible, inutile de considérer cette case
                             l = self.longueur_alignement((i, j), tab_direction[a], joueur)
                             if (l == self.k):
                                 return float('inf')
@@ -289,7 +289,7 @@ class TTT():
 
 
     def min_max_vide(self, p : int, alpha : int, beta : int, joueur : int) -> int:
-            ''' algorithme minimax avec l'heuristique vide '''
+            ''' algorithme minimax avec l'heuristique vide avec alpha beta élagage'''
 
             j = self.next_player()
             best_move = None
@@ -385,58 +385,8 @@ class TTT():
         return best_move
     
 
-
-    # def min_max_IterativDeepening__(self, p : int, alpha : int, beta : int, joueur : int) -> int: # problème, ne marche pas
-    #         ''' algorithme minimax avec iterativ deepening search'''
-    #         j = self.next_player()
-    #         best_move = None
-
-
-
-    #         if (self.gagnant(joueur) or self.gagnant(3 - joueur) or j == 0 or p == 0 ):
-    #             return self.heuristique_align(joueur), best_move
-            
-
-    #         for depth in range(1, p + 1):
-
-    #             if j == joueur: # Noeud Max                   
-    #                 m = float('-inf')
-    #                 for lgn in range(self.n):
-    #                     for cln in range(self.m):
-    #                         if self.grid[lgn][cln] == 0:
-    #                             self.grid[lgn][cln] = joueur
-    #                             score, _ = self.min_max_IterativDeepening(depth - 1, alpha, beta, joueur)
-    #                             self.grid[lgn][cln] = 0
-    #                             if score != None:
-    #                                 if score > m:
-    #                                     m = score
-    #                                     best_move = (lgn, cln)
-    #                                 alpha = max(alpha, m)
-    #                                 if alpha >= beta:
-    #                                     brreak
-        
-    #             else: # Noeud min
-    #                 m = float('inf')           
-    #                 for lgn in range(self.n):
-    #                     for cln in range(self.m):
-    #                         if self.grid[lgn][cln] == 0:
-    #                             self.grid[lgn][cln] = 3 - joueur
-    #                             score, _ = self.min_max_IterativDeepening(depth - 1, alpha, beta, joueur)
-    #                             self.grid[lgn][cln] = 0
-    #                             if score != None:
-    #                                 if score < m:
-    #                                     m = score
-    #                                     best_move = (lgn, cln)
-    #                                 beta = min(beta, m)
-    #                                 if alpha >= beta:
-    #                                     break
-
-    #         return m, best_move
-
-
-
     def min_max_align(self, p : int, alpha : int, beta : int, joueur : int) -> int:
-            ''' algorithme minimax '''
+            ''' algorithme minimax avec l'heuristique align, et alpha béta élagage'''
 
             j = self.next_player()
             best_move = None
@@ -479,8 +429,7 @@ class TTT():
 
 
     def min_max_IterativDeepening(self, joueur : int) -> int: # problème, ne marche pas
-            ''' algorithme minimax avec iterativ deepening search'''
-            
+            ''' algorithme minimax avec iterativ deepening search, on utilise la condition de temps, pas de profondeur max'''
             best_move = None
             m = float('-inf')
             start = time.time()
