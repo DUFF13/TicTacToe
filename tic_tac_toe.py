@@ -423,7 +423,7 @@ class TTT():
                             beta = min(beta, score)
                             if alpha >= beta:
                                 break
-                                
+            print(best_move)             
             return m, best_move
 
 
@@ -443,25 +443,17 @@ class TTT():
 
                 value, move = self.min_max_align(depth, float('-inf'), float('inf'), joueur)
 
-                if joueur == 2:
-                    m = float('-inf')
-                    if value == float('inf'):
-                        return value, move
-                    
-                    if value > m:
-                        m = value
-                        best_move = move
-
-                elif joueur == 1:
-                    m = float('inf')
-                    if value == float('-inf'):
-                        return value, move
-                    
-                    if value < m:
-                        m = value
-                        best_move = move
+                if joueur == 2 and value == float('inf'):
+                    return value, move
+                if joueur == 1 and value == float('-inf'):
+                    return value, move
+                else:
+                    m = value
+                    best_move = move
+        
 
                 depth += 1
+
             print(best_move)
             return m, best_move
 
