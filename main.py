@@ -46,7 +46,7 @@ if __name__ == '__main__':
         k = int(input("Choose k (by default : 3)") or '3')
         jeu = ttt.TTT(n, m, 2, k)
         print("For the moment only minimax with iterativ deepening against minimax")
-        choose_h = "choose the heurisitc 1 and 2 : 1 for minimax with align heurisitc, 2 for minimax with iterativ deepening, 3 for MonteCarlo or 4 for empty_heuristic"
+        choose_h = "choose the heurisitc 1 and 2 : 1 for minimax with align heurisitc, 2 for minimax with iterativ deepening or 3 for empty_heuristic"
         h1, h2 = int(input(choose_h)), int(input(choose_h))
         jouer.jouer_IA_vs_IA(jeu, h1, h2)
 

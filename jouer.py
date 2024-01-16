@@ -212,17 +212,16 @@ def jouer_IA_vs_IA(jeu : ttt.TTT, heuristic1, heuristic2):
 
         if joueur == 1:
             start = time.time()
-            meilleur_coup = None
             print("\nTour du joueur 1.")
             if heuristic1 == 1:
                     _, meilleur_coup = jeu.min_max_align(4, float('-inf'), float('inf'), joueur)
             elif heuristic1 == 2:
                 _, meilleur_coup = jeu.min_max_IterativDeepening(joueur)
-            elif heuristic1 == 4:
+            elif heuristic1 == 3:
                 _, meilleur_coup = jeu.min_max_vide(4, float('-inf'), float('inf'), joueur) 
       
             if meilleur_coup is None:
-                print("none")
+                print("l'IA n'a pas trouvé de meilleure position, elle joue aléatoirement")
                 meilleur_coup = jeu.random_ai()
                 
       
@@ -233,17 +232,16 @@ def jouer_IA_vs_IA(jeu : ttt.TTT, heuristic1, heuristic2):
 
         else:
             start = time.time()
-            meilleur_coup = None
             print("\nTour du joueur 2.")
             if heuristic2 == 1:
                     _, meilleur_coup = jeu.min_max_align(4, float('-inf'), float('inf'), joueur)
             elif heuristic2 == 2:
                 _, meilleur_coup = jeu.min_max_IterativDeepening(joueur)
-            elif heuristic2 == 4:
+            elif heuristic2 == 3:
                 _, meilleur_coup = jeu.min_max_vide(4, float('-inf'), float('inf'),joueur) 
 
             if meilleur_coup is None:
-                print("none")
+                print("l'IA n'a pas trouvé de meilleure position, elle joue aléatoirement")
                 meilleur_coup = jeu.random_ai()
 
             jeu.play_move(meilleur_coup[0], meilleur_coup[1])
@@ -269,10 +267,11 @@ def jouer_partie_IA(jeu : ttt.TTT, heuristic):
     print("Vous jouez contre l'IA. Voici la grille de jeu :\n")
     print(jeu)  # Affichage de la grille de jeu initiale
 
-    joueur = 1 #int(input("Choisir : l'humain commence (1) | l'IA commence (2)"))
+    joueur = 1 
+    starter = int(input("Choisir : l'humain commence (1) | l'IA commence (2)"))
 
     while (jeu.nb_coup != jeu.n * jeu.m and not(jeu.gagnant(1)) and not(jeu.gagnant(2))):
-        if joueur == 1:
+        if joueur == starter:
             print("\nTour du joueur humain.")
             try:
                 lgn = int(input("Entrez le numéro de ligne (0 à {}): ".format(jeu.n - 1)))
@@ -290,8 +289,8 @@ def jouer_partie_IA(jeu : ttt.TTT, heuristic):
                     _, meilleur_coup = jeu.min_max_align(4, float('-inf'), float('inf'), joueur)
             elif heuristic == 2:
                 _, meilleur_coup = jeu.min_max_IterativDeepening(joueur)
-            elif heuristic == 4:
-                _, meilleur_coup = jeu.min_max_vide(4, float('-inf'), float('inf'), joueur, start) 
+            elif heuristic == 3:
+                _, meilleur_coup = jeu.min_max_vide(4, float('-inf'), float('inf'), joueur) 
       
             jeu.play_move(meilleur_coup[0], meilleur_coup[1])
             print("durée du coup : " + str(time.time() - start))
@@ -301,8 +300,14 @@ def jouer_partie_IA(jeu : ttt.TTT, heuristic):
         
 
     if jeu.gagnant(1):
-        print("\nLe joueur humain a gagné !")
+        if starter == 1:
+            print("\nLe joueur humain a gagné !")
+        else:
+            print("\nL'IA a gagné !")
     elif jeu.gagnant(2):
-        print("\nL'IA a gagné !")
+        if starter == 2:
+            print("\nL'IA a gagné !")
+        else:
+            print("\nLe joueur humain a gagné !")
     else:
         print("\nMatch nul !")

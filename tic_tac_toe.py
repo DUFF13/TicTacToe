@@ -3,7 +3,7 @@ import exception
 import time
 import random
 
-DureeMaximalDeRecherche = 5
+DureeMaximalDeRecherche = 1.5
 
 class TTT():
 
@@ -258,6 +258,10 @@ class TTT():
 
             return compteur >= self.k
         
+        if self.gagnant(joueur):
+            return float('inf')
+        if self.gagnant(adversaire):
+            return float('-inf')
 
         for i in range(self.n):
             for j in range(self.m):
@@ -362,7 +366,6 @@ class TTT():
         for move in valid_moves:
             score = 0
             for i in range(num_simulations):
-                wi = 0
                 simulation_game = self.copy()
                 simulation_game.play_move(*move)
                 while not (simulation_game.gagnant(j) or simulation_game.gagnant(3 - j) or simulation_game.nb_coup == self.n * self.m):
@@ -371,12 +374,7 @@ class TTT():
 
                     random_move = random.choice(valid_moves_simulation)
                     simulation_game.play_move(*random_move)
-
-
-                if not(self.gagnant(3 - j)):
-                    wi += 1
-
-                score = wi
+                
 
             scores.append(score)
 
