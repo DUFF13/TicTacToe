@@ -438,6 +438,7 @@ class TTT():
                 current_time = time.time()
 
                 if current_time > endtime:
+                    print("durée dépassée")
                     break
 
                 value, move = self.min_max_align(depth, float('-inf'), float('inf'), joueur)
@@ -450,8 +451,13 @@ class TTT():
                     m = value
                     best_move = move
         
+                
+                if self.n * self.m - self.nb_coup < depth:
+                    break
 
                 depth += 1
 
+
+            print('profondeur de recherche : ' + str(depth))
             return m, best_move
 
