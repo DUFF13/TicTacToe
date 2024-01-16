@@ -383,52 +383,52 @@ class TTT():
     
 
 
-    def min_max_IterativDeepening__(self, p : int, alpha : int, beta : int, joueur : int) -> int: # problème, ne marche pas
-            ''' algorithme minimax avec iterativ deepening search'''
-            j = self.next_player()
-            best_move = None
+    # def min_max_IterativDeepening__(self, p : int, alpha : int, beta : int, joueur : int) -> int: # problème, ne marche pas
+    #         ''' algorithme minimax avec iterativ deepening search'''
+    #         j = self.next_player()
+    #         best_move = None
 
 
 
-            if (self.gagnant(joueur) or self.gagnant(3 - joueur) or j == 0 or p == 0 ):
-                return self.heuristique_align(joueur), best_move
+    #         if (self.gagnant(joueur) or self.gagnant(3 - joueur) or j == 0 or p == 0 ):
+    #             return self.heuristique_align(joueur), best_move
             
 
-            for depth in range(1, p + 1):
+    #         for depth in range(1, p + 1):
 
-                if j == joueur: # Noeud Max                   
-                    m = float('-inf')
-                    for lgn in range(self.n):
-                        for cln in range(self.m):
-                            if self.grid[lgn][cln] == 0:
-                                self.grid[lgn][cln] = joueur
-                                score, _ = self.min_max_IterativDeepening(depth - 1, alpha, beta, joueur)
-                                self.grid[lgn][cln] = 0
-                                if score != None:
-                                    if score > m:
-                                        m = score
-                                        best_move = (lgn, cln)
-                                    alpha = max(alpha, m)
-                                    if alpha >= beta:
-                                        break
+    #             if j == joueur: # Noeud Max                   
+    #                 m = float('-inf')
+    #                 for lgn in range(self.n):
+    #                     for cln in range(self.m):
+    #                         if self.grid[lgn][cln] == 0:
+    #                             self.grid[lgn][cln] = joueur
+    #                             score, _ = self.min_max_IterativDeepening(depth - 1, alpha, beta, joueur)
+    #                             self.grid[lgn][cln] = 0
+    #                             if score != None:
+    #                                 if score > m:
+    #                                     m = score
+    #                                     best_move = (lgn, cln)
+    #                                 alpha = max(alpha, m)
+    #                                 if alpha >= beta:
+    #                                     break
         
-                else: # Noeud min
-                    m = float('inf')           
-                    for lgn in range(self.n):
-                        for cln in range(self.m):
-                            if self.grid[lgn][cln] == 0:
-                                self.grid[lgn][cln] = 3 - joueur
-                                score, _ = self.min_max_IterativDeepening(depth - 1, alpha, beta, joueur)
-                                self.grid[lgn][cln] = 0
-                                if score != None:
-                                    if score < m:
-                                        m = score
-                                        best_move = (lgn, cln)
-                                    beta = min(beta, m)
-                                    if alpha >= beta:
-                                        break
+    #             else: # Noeud min
+    #                 m = float('inf')           
+    #                 for lgn in range(self.n):
+    #                     for cln in range(self.m):
+    #                         if self.grid[lgn][cln] == 0:
+    #                             self.grid[lgn][cln] = 3 - joueur
+    #                             score, _ = self.min_max_IterativDeepening(depth - 1, alpha, beta, joueur)
+    #                             self.grid[lgn][cln] = 0
+    #                             if score != None:
+    #                                 if score < m:
+    #                                     m = score
+    #                                     best_move = (lgn, cln)
+    #                                 beta = min(beta, m)
+    #                                 if alpha >= beta:
+    #                                     break
 
-            return m, best_move
+    #         return m, best_move
 
 
 
