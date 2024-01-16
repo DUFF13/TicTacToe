@@ -1,5 +1,4 @@
 ### A tic tc toe game built for our ENAC's project
-import sys
 import tic_tac_toe as ttt
 import jouer
 
