@@ -422,8 +422,7 @@ class TTT():
                                 best_move = (lgn, cln)
                             beta = min(beta, score)
                             if alpha >= beta:
-                                break
-            print(best_move)             
+                                break            
             return m, best_move
 
 
@@ -454,6 +453,5 @@ class TTT():
 
                 depth += 1
 
-            print(best_move)
             return m, best_move
 
