@@ -2,6 +2,7 @@ import numpy as np
 import exception
 import time
 import random
+import math
 
 DureeMaximalDeRecherche = 5
 
@@ -354,26 +355,28 @@ class TTT():
     def MonteCarlo(self): # c'est vraiment pas top pour le moment
         ''' algorithme MCTS, mais soucis dans la fonction d'évalutation qui rend nul l'algo'''
         num_simulations = 1000
-
+        j = self.next_player()
         valid_moves = [(i, j) for i in range(self.m) for j in range(self.n) if self.is_valid_move(i, j)]
 
         scores = []
         for move in valid_moves:
             score = 0
-            for _ in range(num_simulations):
+            for i in range(num_simulations):
+                wi = 0
                 simulation_game = self.copy()
                 simulation_game.play_move(*move)
-                while not (simulation_game.gagnant(1) or simulation_game.gagnant(2) or simulation_game.nb_coup == self.n * self.m):
+                while not (simulation_game.gagnant(j) or simulation_game.gagnant(3 - j) or simulation_game.nb_coup == self.n * self.m):
 
                     valid_moves_simulation = [(i, j) for i in range(simulation_game.m) for j in range(simulation_game.n) if simulation_game.is_valid_move(i, j)]
 
                     random_move = random.choice(valid_moves_simulation)
                     simulation_game.play_move(*random_move)
 
-                if simulation_game.gagnant(1):
-                    score += 10
-                    if (simulation_game.gagnant(2)):
-                        score += 5
+
+                if not(self.gagnant(3 - j)):
+                    wi += 1
+
+                score = wi
 
             scores.append(score)
 
@@ -410,7 +413,7 @@ class TTT():
     #                                     best_move = (lgn, cln)
     #                                 alpha = max(alpha, m)
     #                                 if alpha >= beta:
-    #                                     break
+    #                                     brreak
         
     #             else: # Noeud min
     #                 m = float('inf')           
@@ -474,55 +477,42 @@ class TTT():
             return m, best_move
 
 
-    def min_max_IterativDeepening(self, p : int, alpha : int, beta : int, joueur : int, start) -> int: # problème, ne marche pas
+
+    def min_max_IterativDeepening(self, joueur : int) -> int: # problème, ne marche pas
             ''' algorithme minimax avec iterativ deepening search'''
             
-            j = self.next_player()
             best_move = None
-
-
-            if (self.gagnant(joueur) or self.gagnant(3 - joueur) or j == 0 or p == 0 ):
-                return self.heuristique_align(joueur), best_move
-            
-
-            for depth in range(1, p + 1):
-
+            m = float('-inf')
+            start = time.time()
+            endtime = start + DureeMaximalDeRecherche
+            depth = 1
+            while(True):
                 current_time = time.time()
-                if (current_time - start > DureeMaximalDeRecherche):
-                    print("durée de recherche dépassée")
-                    return m, best_move
 
-            
-                if j == joueur: # Noeud Max                   
+                if current_time > endtime:
+                    break
+
+                value, move = self.min_max_align(depth, float('-inf'), float('inf'), joueur)
+
+                if joueur == 2:
                     m = float('-inf')
-                    for lgn in range(self.n):
-                        for cln in range(self.m):
-                            if self.grid[lgn][cln] == 0:
-                                self.grid[lgn][cln] = joueur
-                                score, _ = self.min_max_align(depth - 1, alpha, beta, joueur)
-                                self.grid[lgn][cln] = 0
-                                if score != None:
-                                    if score > m:
-                                        m = score
-                                        best_move = (lgn, cln)
-                                    alpha = max(alpha, m)
-                                    if alpha >= beta:
-                                        break
-        
-                else: # Noeud min
-                    m = float('inf')           
-                    for lgn in range(self.n):
-                        for cln in range(self.m):
-                            if self.grid[lgn][cln] == 0:
-                                self.grid[lgn][cln] = 3 - joueur
-                                score, _ = self.min_max_align(depth - 1, alpha, beta, joueur)
-                                self.grid[lgn][cln] = 0
-                                if score != None:
-                                    if score < m:
-                                        m = score
-                                        best_move = (lgn, cln)
-                                    beta = min(beta, m)
-                                    if alpha >= beta:
-                                        break
+                    if value == float('inf'):
+                        return value, move
+                    
+                    if value > m:
+                        m = value
+                        best_move = move
 
+                elif joueur == 1:
+                    m = float('inf')
+                    if value == float('-inf'):
+                        return value, move
+                    
+                    if value < m:
+                        m = value
+                        best_move = move
+
+                depth += 1
+            print(best_move)
             return m, best_move
+
