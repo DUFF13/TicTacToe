@@ -93,51 +93,12 @@ def jouer_partie(jeu : ttt.TTT):
 
 
 
-
-def jouer_partie_monte_carlo(jeu : ttt.TTT):
-    ''' jouer une partie contre l'IA en 1v1'''
-    print("Vous jouez contre l'IA. Voici la grille de jeu :\n")
-    print(jeu)  # Affichage de la grille de jeu initiale
-
-    joueur = 1 # int(input("Choisir : l'humain commence (1) | l'IA commence (2)"))
-
-    while (joueur != 0 and not(jeu.gagnant(1)) and not(jeu.gagnant(2))):
-        if joueur == 1:
-            print("\nTour du joueur humain.")
-            try:
-                lgn = int(input("Entrez le numéro de ligne (0 à {}): ".format(jeu.n - 1)))
-                cln = int(input("Entrez le numéro de colonne (0 à {}): ".format(jeu.m - 1)))
-                jeu.play_move(lgn, cln)
-                
-            except (ValueError, IndexError, exception.InvalidMoveError):
-                print("Coup invalide. Veuillez réessayer.")
-                continue
-        else: # dans cette version, l'IA est toujours le joueur max, i.e elle commence jamais
-            start = time.time()
-            print("\nTour de l'IA.")
-            best_move = jeu.MonteCarlo()
-
-            jeu.play_move(*best_move)
-            print("durée du coup : " + str(time.time() - start))
-                
-        joueur = jeu.next_player() # Passage au joueur suivant
-        print(jeu)  # Affichage de la grille après le coup
-        
-
-    if jeu.gagnant(1):
-        print("\nLe joueur humain a gagné !")
-    elif jeu.gagnant(2):
-        print("\nL'IA a gagné !")
-    else:
-        print("\nMatch nul !")
-
-
 def jouer_partie_IA_3joueurs(jeu : ttt.TTT, heuristic):
     ''' jouer une partie contre l'IA en 1v1'''
     print("Vous jouez contre l'IA. Voici la grille de jeu :\n")
     print(jeu)  # Affichage de la grille de jeu initiale
 
-    joueur = 1 #int(input("Choisir : l'humain commence (1) | l'IA commence (2)"))
+    joueur = 1 
 
     while (jeu.nb_coup  < jeu.n * jeu.m and not(jeu.gagnant(1)) and not(jeu.gagnant(2)) and not(jeu.gagnant(3))):
         if joueur == 1:
@@ -167,8 +128,10 @@ def jouer_partie_IA_3joueurs(jeu : ttt.TTT, heuristic):
                     _, meilleur_coup = jeu.min_max_align(3, float('inf'), float('-inf'), joueur)
             elif heuristic == 2:
                 _, meilleur_coup = jeu.min_max_IterativDeepening(joueur)
-            elif heuristic == 4:
+            elif heuristic == 3:
                 _, meilleur_coup = jeu.min_max_vide(3, float('-inf'), float('inf'), joueur) 
+            elif heuristic == 4:
+                _, meilleur_coup = jeu.MonteCarlo()
 
 
             jeu.play_move(meilleur_coup[0], meilleur_coup[1])
@@ -219,6 +182,8 @@ def jouer_IA_vs_IA(jeu : ttt.TTT, heuristic1, heuristic2):
                 _, meilleur_coup = jeu.min_max_IterativDeepening(joueur)
             elif heuristic1 == 3:
                 _, meilleur_coup = jeu.min_max_vide(4, float('-inf'), float('inf'), joueur) 
+            elif heuristic1 == 4:
+                _, meilleur_coup = jeu.MonteCarlo()
       
             if meilleur_coup is None:
                 print("l'IA n'a pas trouvé de meilleure position, elle joue aléatoirement")
@@ -238,7 +203,9 @@ def jouer_IA_vs_IA(jeu : ttt.TTT, heuristic1, heuristic2):
             elif heuristic2 == 2:
                 _, meilleur_coup = jeu.min_max_IterativDeepening(joueur)
             elif heuristic2 == 3:
-                _, meilleur_coup = jeu.min_max_vide(4, float('-inf'), float('inf'),joueur) 
+                _, meilleur_coup = jeu.min_max_vide(4, float('-inf'), float('inf'),joueur)
+            elif heuristic2 == 4:
+                _, meilleur_coup = jeu.MonteCarlo()
 
             if meilleur_coup is None:
                 print("l'IA n'a pas trouvé de meilleure position, elle joue aléatoirement")
@@ -290,7 +257,9 @@ def jouer_partie_IA(jeu : ttt.TTT, heuristic):
             elif heuristic == 2:
                 _, meilleur_coup = jeu.min_max_IterativDeepening(joueur)
             elif heuristic == 3:
-                _, meilleur_coup = jeu.min_max_vide(4, float('-inf'), float('inf'), joueur) 
+                _, meilleur_coup = jeu.min_max_vide(4, float('-inf'), float('inf'), joueur)
+            elif heuristic == 4:
+                _, meilleur_coup = jeu.MonteCarlo()
       
             jeu.play_move(meilleur_coup[0], meilleur_coup[1])
             print("durée du coup : " + str(time.time() - start))
