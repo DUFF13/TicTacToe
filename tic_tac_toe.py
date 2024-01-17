@@ -37,6 +37,7 @@ class TTT():
 
         return grid
 
+
     def copy(self):
         ''' méthode pour créer une copie de notre grille'''
         ttt = TTT(self.n, self.m, self.nb_player, self.k)
@@ -45,6 +46,7 @@ class TTT():
         ttt.grid = grid
         ttt.nb_coup = self.nb_coup
         return ttt
+
 
     def repartition(self) -> np.ndarray:
         ''' tabbleau contenant le nombre de coups joué pour chaque joueur '''
@@ -88,6 +90,7 @@ class TTT():
         else:
             return self.grid[row][column] == 0
         
+
 
     def play_move(self, row : int, column : int) -> None:
         ''' méthode pour jouer un coup'''
@@ -156,12 +159,14 @@ class TTT():
                         return True
         return False # O(4*n*m*k) = O(n*m*k)
 
+
     def get_winner(self):
         ''' renvoie le numéro du vainqueur ou 0 si aucun gagnant'''
         for i in range(self.nb_player + 1):
             if self.gagnant(i):
                 return i
         return 0
+
 
     def longueur_alignement(self, i : tuple, di : tuple, joueur : int) -> int:
         ''' méthode pour connaître la longueur d'un alignement, utile pour coder minimax par la suite pour connaitre quel joueur est favori'''
@@ -258,8 +263,6 @@ class TTT():
 
             return compteur >= self.k
         
-        if self.gagnant(joueur):
-            return float('inf')
         if self.gagnant(adversaire):
             return float('-inf')
 
@@ -286,7 +289,7 @@ class TTT():
 
 
         score_joueur = self.k * (algn_max_joueur - algn_max_adversaire) 
-        score_adversaire = self.k * (algn_max_adversaire - algn_max_joueur) 
+        score_adversaire = self.k * (algn_max_adversaire - algn_max_joueur)
         return (score_joueur - score_adversaire)
 
         
@@ -357,7 +360,7 @@ class TTT():
 
 
     def MonteCarlo(self): # c'est vraiment pas top pour le moment
-        ''' algorithme MCTS, mais soucis dans la fonction d'évalutation qui rend nul l'algo'''
+        ''' algorithme MCTS'''
         num_simulations = 1000
         j = self.next_player()
         valid_moves = [(i, j) for i in range(self.m) for j in range(self.n) if self.is_valid_move(i, j)]
@@ -375,13 +378,18 @@ class TTT():
                     random_move = random.choice(valid_moves_simulation)
                     simulation_game.play_move(*random_move)
                 
+                    if not(simulation_game.gagnant(3 - j)):
+                        score += 10
+                    else:
+                        score -= 5
 
             scores.append(score)
 
         best_move = valid_moves[scores.index(max(scores))]
 
-        return best_move
+        return 0, best_move
     
+
 
     def min_max_align(self, p : int, alpha : int, beta : int, joueur : int) -> int:
             ''' algorithme minimax avec l'heuristique align, et alpha béta élagage'''
