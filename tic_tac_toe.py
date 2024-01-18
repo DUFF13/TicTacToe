@@ -57,7 +57,7 @@ class TTT():
             for j in range(self.m):
                 game[self.grid[i][j]] += 1
 
-        return game # O(n*m) bof
+        return game # O(n*m) 
 
 
 

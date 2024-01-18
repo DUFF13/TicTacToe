@@ -271,16 +271,15 @@ def jouer_partie_IA(jeu : ttt.TTT, heuristic):
         joueur = jeu.next_player() # Passage au joueur suivant
         print(jeu)  # Affichage de la grille après le coup
         
-
-    if jeu.gagnant(1):
-        if starter == 1:
+    if starter == 1:
+        if jeu.gagnant(1):
             print("\nLe joueur humain a gagné !")
-        else:
+        elif jeu.gagnant(2):
             print("\nL'IA a gagné !")
-    elif jeu.gagnant(2):
-        if starter == 2:
+    if starter == 2:
+        if jeu.gagnant(1):
             print("\nL'IA a gagné !")
-        else:
+        elif jeu.gagnant(2):
             print("\nLe joueur humain a gagné !")
     else:
         print("\nMatch nul !")
