@@ -3,7 +3,7 @@ import exception
 import time
 import random
 
-DureeMaximalDeRecherche = 1.5
+DureeMaximalDeRecherche = 2
 
 class TTT():
 
@@ -19,7 +19,7 @@ class TTT():
 
 
     def __repr__(self) -> str:
-        ''' méthode pour afficher la grille '''
+        ''' méthode pour afficher la grille dans le terminal'''
         grid = "    " + "  | ".join(str(i) for i in range(self.m)) + "  |" 
         grid += "\n  " + "+----" * (self.m) + "\n"
         for i in range(self.n):
@@ -212,7 +212,7 @@ class TTT():
 
 
 
-    def heuristique_vide(self, joueur : int) -> int: 
+    def heuristique_vide(self, joueur : int): 
         ''' heuristique pour min_max, à déterminer (Continue : compare le nombre de cases libres autour de la case jouée)'''
         w_max_joueur = 0
         w_max_adversaire = 0
@@ -236,7 +236,7 @@ class TTT():
         return  (self.k * (w_max_joueur - w_max_adversaire) * w_max_joueur) # plus c'est grand, plus le joueur a une position favorable
 
 
-    def heuristique_align(self, joueur) -> float: 
+    def heuristique_align(self, joueur): 
         ''' heuristique pour min_max, à déterminer (assez naïve, elle compare les longueurs d'alignements possible) '''
         algn_max_joueur = 0
         algn_max_adversaire = 0
@@ -295,7 +295,7 @@ class TTT():
         
 
 
-    def min_max_vide(self, p : int, alpha : int, beta : int, joueur : int) -> int:
+    def min_max_vide(self, p : int, alpha : int, beta : int, joueur : int):
             ''' algorithme minimax avec l'heuristique vide avec alpha beta élagage'''
 
             j = self.next_player()
@@ -359,9 +359,9 @@ class TTT():
         
 
 
-    def MonteCarlo(self): # c'est vraiment pas top pour le moment
-        ''' algorithme MCTS'''
-        num_simulations = 1000
+    def MonteCarlo(self): # nul mais fonctionne 
+        ''' algorithme probabiliste de type monte carlo '''
+        num_simulations = 100
         j = self.next_player()
         valid_moves = [(i, j) for i in range(self.m) for j in range(self.n) if self.is_valid_move(i, j)]
 
@@ -380,6 +380,8 @@ class TTT():
                 
                     if not(simulation_game.gagnant(3 - j)):
                         score += 10
+                        if simulation_game.gagnant(j):
+                            score += 10
                     else:
                         score -= 5
 
@@ -387,11 +389,11 @@ class TTT():
 
         best_move = valid_moves[scores.index(max(scores))]
 
-        return 0, best_move
+        return 0, best_move # 0 pour correspondre au prototype des fonctions minimax
     
 
 
-    def min_max_align(self, p : int, alpha : int, beta : int, joueur : int) -> int:
+    def min_max_align(self, p : int, alpha : int, beta : int, joueur : int):
             ''' algorithme minimax avec l'heuristique align, et alpha béta élagage'''
 
             j = self.next_player()
@@ -433,7 +435,7 @@ class TTT():
 
 
 
-    def min_max_IterativDeepening(self, joueur : int) -> int: # problème, ne marche pas
+    def min_max_IterativDeepening(self, joueur : int):
             ''' algorithme minimax avec iterativ deepening search, on utilise la condition de temps, pas de profondeur max'''
             best_move = None
             m = float('-inf')
