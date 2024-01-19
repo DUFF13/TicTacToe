@@ -379,11 +379,11 @@ class TTT():
                     simulation_game.play_move(*random_move)
                 
                     if not(simulation_game.gagnant(3 - j)):
-                        score += 10
+                        score += 5
                         if simulation_game.gagnant(j):
-                            score += 10
+                            score += 15
                     else:
-                        score -= 5
+                        score -= 20
 
             scores.append(score)
 
