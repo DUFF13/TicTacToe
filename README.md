@@ -1,8 +1,8 @@
 A simple tic tac toe game with AI (minimax) with basic heuristic and iterativ deepening
 
 
-Execute the main file to play in the terminal
-Execute the main_ig file to play with graphics mode (tkinter)
+- Execute the main file to play in the terminal
+- Execute the main_ig file to play with graphics mode (tkinter)
 
 Algorithm :
   - Minimax with heuristic which compare the best possible alignments for the player and his opponent
