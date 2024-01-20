@@ -2,7 +2,7 @@ from tkinter import *
 # from firstpage import Firstpage 
 import tic_tac_toe as ttt
 from welcome_page import WelcomePage
-import game_ig
+
 
 def main():
     #Création d'une première fenêtre
@@ -14,11 +14,11 @@ def main():
     
     #Personnalisation de la fenêtre
     window.title( "Morpion ")
-    window.geometry("800x800")
+    window.geometry("1200x800") # 800X800
     window.config(background= '#050C49')
 
     # Pas de redimmention de la fenêtre possible
-    window.resizable(False, False)
+    window.resizable(True, False)
 
     #création d'une barre de menu
     menu_bar = Menu(window)
@@ -38,6 +38,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
+
 
 

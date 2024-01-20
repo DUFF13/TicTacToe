@@ -101,21 +101,24 @@ class GameIG(ttt.TTT) :
         self.buttons[row][col].config(text = self.current_player, font = ("Impact", 40), fg = symbol_color )
         self.grid[row][col] = player
         self.switch_player() 
+        self.check_win()
 
         # Si c'est le tour de l'IA, déclencher le coup de l'IA
         if self.game_mode == 2 and self.current_player == 'O':
             self.jouer_partie_IA_IG(self)
+            self.check_win()
+            
         
         # TODO Si c'est le tour de l'IA contre IA ==> En essaie ne fonctionne pas
         elif self.game_mode == 3 and (self.current_player == 'X' or self.current_player == 'O'):
             self.jouer_partie_IA_IG(self)
             self.switch_player()
+            self.check_win()
             
-
         
         # Après chaque coup on vérifie s'il a été gagnant puis on change de joueur
         self.check_win()
-          
+        
 
     def switch_player(self) :
         if self.nb_player == 2: # Si 2 joueurs
@@ -216,7 +219,7 @@ class GameIG(ttt.TTT) :
     def jouer_partie_IA_IG(self, game : ttt.TTT):
                     
         start = time.time()
-        
+
         # strétégie abordée
         if self.heuristic == 1:
             _, meilleur_coup = game.min_max_align(4, float('-inf'), float('inf'), 1)

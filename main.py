@@ -51,19 +51,3 @@ if __name__ == '__main__':
 
 
 
-
-
-'''       TODO
-      Se renseigner sur le sujet : itérative deepening -> fait
-#       Pour l'heuristique : 
-          - tester différentes profondeur (jusqu'à p5) --> algo naif OK
-
-          - joueur uniquement les cases continues à celles déjà jouées --> on empêche l'autre de gagner OK
-          - Tester nos heuristiques les unes contres les autres OK ==> fait
-          - Essayer de battre notre IA en 4x4 et 5x5 OK -> fait
-
-
-#        algorithme probabiliste -> monte carlo (termine mais pas forcément correct) et peut-être las vegas si je trouve des idées (l'inverse), vraiment pas top
-
-#       Pour l'IA : 
-'''
