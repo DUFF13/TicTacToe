@@ -264,9 +264,9 @@ def jouer_partie_IA(jeu : ttt.TTT, heuristic):
             if meilleur_coup is None:
                 print("l'IA n'a pas trouvé de meilleure position, elle joue aléatoirement")
                 meilleur_coup = jeu.random_ai()
-            else:
-                jeu.play_move(meilleur_coup[0], meilleur_coup[1])
-                print("durée du coup : " + str(time.time() - start))
+                
+            jeu.play_move(meilleur_coup[0], meilleur_coup[1])
+            print("durée du coup : " + str(time.time() - start))
                 
         joueur = jeu.next_player() # Passage au joueur suivant
         print(jeu)  # Affichage de la grille après le coup
