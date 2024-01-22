@@ -276,7 +276,7 @@ def jouer_partie_IA(jeu : ttt.TTT, heuristic):
             print("\nLe joueur humain a gagné !")
         elif jeu.gagnant(2):
             print("\nL'IA a gagné !")
-    if starter == 2:
+    elif starter == 2:
         if jeu.gagnant(1):
             print("\nL'IA a gagné !")
         elif jeu.gagnant(2):

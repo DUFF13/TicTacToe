@@ -112,7 +112,6 @@ class GameIG(ttt.TTT) :
         # TODO Si c'est le tour de l'IA contre IA ==> En essaie ne fonctionne pas
         elif self.game_mode == 3 and (self.current_player == 'X' or self.current_player == 'O'):
             self.jouer_partie_IA_IG(self)
-            self.switch_player()
             self.check_win()
             
         
@@ -228,6 +227,7 @@ class GameIG(ttt.TTT) :
         elif self.heuristic == 3:
             _, meilleur_coup = game.min_max_vide(4, float('-inf'), float('inf'), 1)
         elif self.heuristic == 4:
+            print("coucou")
             _, meilleur_coup = game.MonteCarlo()
         
         # Choix du coup et mise à jour de la grille de jeu game: TTT

@@ -14,7 +14,7 @@ def main():
     
     #Personnalisation de la fenêtre
     window.title( "Morpion ")
-    window.geometry("1200x800") # 800X800
+    window.geometry("1200x1080") 
     window.config(background= '#050C49')
 
     # Pas de redimmention de la fenêtre possible

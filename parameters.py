@@ -201,6 +201,7 @@ def upgrade_parameters_and_start(parameter_window, entry_n : int, entry_m : int,
         raise ValueError("Veuillez saisir les valeurs entières pour n, m et k svp")
     
     
+    parameter_window.destroy()  # Ferme la fenêtre des paramètres 
     
     game = ttt.TTT(n, m, nb_player, k)
 
@@ -210,7 +211,7 @@ def upgrade_parameters_and_start(parameter_window, entry_n : int, entry_m : int,
     else : 
         game_ig = GameIG(Tk(), game, game_mode, heuristic)
 
-    parameter_window.destroy()  # Ferme la fenêtre des paramètres   
+      
 
     
 

@@ -3,7 +3,7 @@ import exception
 import time
 import random
 
-DureeMaximalDeRecherche = 2
+DureeMaximalDeRecherche = 5
 
 class TTT():
 
@@ -223,17 +223,17 @@ class TTT():
                 if self.grid[i][j] == joueur:
                     if self.coup_gagnant((i, j), joueur) : # Si le coup est gagnant on oublie la défense et on joue
                         return float('inf')
-                    w = self.cases_vides((i, j))
-                    if w > w_max_adversaire:
-                        w_max_joueur += self.cases_vides((i, j)) 
+                    # w = self.cases_vides((i, j))
+                    # if w > w_max_adversaire:
+                    w_max_joueur += self.cases_vides((i, j)) 
                 
                                 
                 elif (self.grid[i][j] == adversaire):
                     if self.coup_gagnant((i, j), adversaire) :
                         return float('-inf')
-                    w = self.cases_vides((i, j))
-                    if w > w_max_adversaire:
-                        w_max_adversaire += self.cases_vides((i, j))
+                    # w = self.cases_vides((i, j))
+                    # if w > w_max_adversaire:
+                    w_max_adversaire += self.cases_vides((i, j))
                     
         return  (self.k * (w_max_joueur - w_max_adversaire) * w_max_joueur) # plus c'est grand, plus le joueur a une position favorable
 
