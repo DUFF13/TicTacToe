@@ -8,7 +8,7 @@ import parameters as par
 class WelcomePage():
     def __init__(self, window) -> None:
         self.window = window
-        self.window.minsize(1600, 900)
+        self.window.minsize(1475, 900)
         self.selected_button = None 
         
         # Création d'une Frame pour tout centrer sur la page d'acceuil

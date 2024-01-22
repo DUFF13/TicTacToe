@@ -282,7 +282,7 @@ class TTT():
                         if alignement_possible((i, j),tab_direction[a], adversaire):
                             l = self.longueur_alignement((i, j), tab_direction[a], adversaire)
                             if (l == self.k):
-                                return float('-inf') - 100
+                                return float('-inf')
                             if (l > algn_max_adversaire):
                                 algn_max_adversaire = l
                 
@@ -452,20 +452,22 @@ class TTT():
                 value, move = self.min_max_align(depth, float('-inf'), float('inf'), joueur)
 
                 if joueur == 2 and value == float('inf'):
+                    print('profondeur de recherche : ' + str(depth))
                     return value, move
                 if joueur == 1 and value == float('-inf'):
+                    print('profondeur de recherche : ' + str(depth))
                     return value, move
                 else:
                     m = value
                     best_move = move
         
                 
-                if self.n * self.m - self.nb_coup < depth:
+                if self.n * self.m - self.nb_coup < depth: # rien ne sert de continuer si on arrive à une feuille
                     break
 
                 depth += 1
 
 
-            print('profondeur de recherche : ' + str(depth))
+            print('profondeur de recherche : ' + str(depth - 1))
             return m, best_move
 
