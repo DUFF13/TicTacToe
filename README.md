@@ -10,8 +10,8 @@ A simple generalized tic tac toe game (nmk game) with AI (minimax) with basic he
 - 1 human vs 1 AI vs 1 human
 
 TO PLAY :
-- Execute the main file to play in the terminal
-- Execute the main_ig file to play with graphics mode (tkinter) 
+- Execute the main file to play in the terminal (finished), use it to try everything
+- Execute the main_ig file to play with graphics mode (tkinter but not finished)
 
 ALGORITHM :
 (all algorithm are in tic_tac_toe file)
