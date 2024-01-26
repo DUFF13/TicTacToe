@@ -3,7 +3,7 @@ import exception
 import time
 import random
 
-DureeMaximalDeRecherche = 5
+DureeMaximalDeRecherche = 2.5
 
 class TTT():
 
