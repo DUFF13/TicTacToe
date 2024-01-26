@@ -26,4 +26,4 @@ FILE FOR EACH MOD:
 - Terminal mode uses the files tic_tac_toe.py, jouer.py, exception.py and main.py
 
 
-This is not optimized and well-writing, I should have used more class like at least one for TicTacToe game, one for my heuristics and one for AIs
+This is not optimized and well-written, I should have used more class like at least one for TicTacToe game, one for my heuristics and one for AIs
